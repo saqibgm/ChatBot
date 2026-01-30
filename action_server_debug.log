@@ -1,0 +1,39 @@
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\core\tracker_store.py:1044: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  Base: DeclarativeMeta = declarative_base()
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\shared\utils\validation.py:134: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  import pkg_resources
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('mpl_toolkits')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('ruamel')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\sanic_cors\extension.py:39: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  SANIC_VERSION = LooseVersion(sanic_version)
+2026-01-30 07:27:19 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Starting action endpoint server...
+2026-01-30 07:27:20 [1;30mERROR   [0m [34mrasa_sdk.executor[0m  - [31mFailed to register package 'actions'.[0m
+Traceback (most recent call last):
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa_sdk\executor.py", line 263, in register_package
+    self._import_submodules(package)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa_sdk\executor.py", line 226, in _import_submodules
+    self._import_module(full_name)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa_sdk\executor.py", line 240, in _import_module
+    module = importlib.import_module(name)
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "D:\Plugin\ChatBot\actions\actions.py", line 1228, in <module>
+    import chromadb
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\chromadb\__init__.py", line 3, in <module>
+    from chromadb.api.client import Client as ClientCreator
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\chromadb\api\__init__.py", line 1, in <module>
+    from chromadb.api.types import *  # noqa: F401, F403
+  File "C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\chromadb\api\types.py", line 24, in <module>
+    from pydantic import BaseModel, field_validator, model_validator
+ImportError: cannot import name 'field_validator' from 'pydantic' (C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\__init__.cp310-win_amd64.pyd)

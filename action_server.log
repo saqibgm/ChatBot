@@ -1,0 +1,36 @@
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\core\tracker_store.py:1044: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  Base: DeclarativeMeta = declarative_base()
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\shared\utils\validation.py:134: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  import pkg_resources
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('mpl_toolkits')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:2871: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('ruamel')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+C:\Users\hp\AppData\Local\Programs\Python\Python310\lib\site-packages\sanic_cors\extension.py:39: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  SANIC_VERSION = LooseVersion(sanic_version)
+2026-01-30 07:48:30 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Starting action endpoint server...
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_greet'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_nopcommerce_login'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_search_products'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_get_product_details'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_check_stock'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_update_stock'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_track_order'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_get_invoice'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_update_order_status'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_list_orders'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_find_product'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_find_customer'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_get_customer'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_get_customer_details'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_customer_last_orders'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_token_me'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_me'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_kb_search'.
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Starting plugins...
+2026-01-30 07:48:31 [1;30mDEBUG   [0m [34mrasa_sdk.plugin[0m  - No plugins found: No module named 'rasa_sdk_plugins'
+2026-01-30 07:48:31 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Action endpoint is up and running on http://0.0.0.0:5055
+2026-01-30 07:48:31 [1;30mDEBUG   [0m [34mrasa_sdk.utils[0m  - Using the default number of Sanic workers (1).

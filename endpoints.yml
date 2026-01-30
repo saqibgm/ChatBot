@@ -1,0 +1,17 @@
+action_endpoint:
+  url: "http://127.0.0.1:5155/webhook"
+
+tracker_store:
+  type: SQL
+  dialect: "mssql+pyodbc"
+  url: "mssql+pyodbc://sa:12345@LAPTOP-SI\\SQLEXPRESS/ChatBot?driver=ODBC+Driver+17+for+SQL+Server"
+
+event_broker:
+  type: "actions.custom_broker.SQLServerBroker"
+  # db: "ChatBot"
+  # username: "sa"
+  # password: "12345"
+
+# Using in-memory tracker store for now
+# tracker_store:
+#   type: InMemoryTrackerStore

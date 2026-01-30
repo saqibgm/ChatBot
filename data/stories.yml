@@ -1,0 +1,31 @@
+version: "3.1"
+
+stories:
+  - story: Out of scope
+    steps:
+      - intent: out_of_scope
+      - action: utter_out_of_scope
+
+  - story: Help and goodbye
+    steps:
+      - intent: help
+      - action: utter_help
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: Product details path
+    steps:
+      - intent: product_details
+      - action: action_get_product_details
+
+  - story: Track order path
+    steps:
+      - intent: track_order
+      - action: action_track_order
+
+  - story: Admin customer lookup path
+    steps:
+      - intent: admin_get_customer
+      - action: action_admin_get_customer
+      - intent: admin_customer_last_orders
+      - action: action_admin_customer_last_orders
