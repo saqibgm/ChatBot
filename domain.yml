@@ -44,6 +44,7 @@ entities:
   - order_status
   - stock_quantity
   - category
+  - search_query
   - nop_username
   - nop_password
   - customer_id
@@ -73,6 +74,8 @@ slots:
     mappings:
       - type: from_entity
         entity: product_name
+      - type: from_entity
+        entity: search_query
 
   stock_quantity:
     type: text
@@ -153,33 +156,35 @@ responses:
 I can help you with:
 
 🔍 **Search Products** - Find products in our catalog
-📦 **Check Stock** - View product availability
+📦 **Product** - Get product details by ID
+👤 **Customer** - Get customer details by ID
 🛒 **Track Orders** - Check your order status
-🧾 **Get Invoice** - Download order invoices
 
 How can I assist you today?"
       buttons:
         - title: "🔍 Search Products"
           payload: "/search_products"
+        - title: "📦 Product"
+          payload: "/product_details"
+        - title: "👤 Customer"
+          payload: "/admin_get_customer"
         - title: "🛒 Track Order"
           payload: "/track_order"
-        - title: "📦 Check Stock"
-          payload: "/check_stock"
-        - title: "❓ Help"
-          payload: "/help"
 
   utter_goodbye:
     - text: "Goodbye! Thanks for shopping with us. Come back soon! 👋"
 
   utter_help:
-    - text: "I can help you with:\n\n🔍 **Search Products** - Find items in our catalog\n📦 **Check Stock** - See product availability\n🛒 **Track Orders** - Get order status updates\n🧾 **Get Invoice** - Download PDF invoices\n\nJust tell me what you need!"
+    - text: "I can help you with:\n\n🔍 **Search Products** - Find items in our catalog\n📦 **Product** - Get product details by ID\n👤 **Customer** - Get customer details by ID\n🛒 **Track Orders** - Get order status updates\n\nJust tell me what you need!"
       buttons:
         - title: "🔍 Search Products"
           payload: "/search_products"
+        - title: "📦 Product"
+          payload: "/product_details"
+        - title: "👤 Customer"
+          payload: "/admin_get_customer"
         - title: "🛒 Track Order"
           payload: "/track_order"
-        - title: "📦 Check Stock"
-          payload: "/check_stock"
 
   utter_ask_product_id:
     - text: "Please provide the **Product ID** (e.g., 123)."
@@ -222,11 +227,11 @@ How can I assist you today?"
       buttons:
         - title: "🔍 Search Products"
           payload: '/search_products'
+        - title: "📦 Product"
+          payload: '/product_details'
+        - title: "👤 Customer"
+          payload: '/admin_get_customer'
         - title: "🛒 Track Order"
-          payload: '/track_order'
-        - title: "📦 Check Stock"
-          payload: '/check_stock'
-        - title: "❓ Help"
           payload: '/help'
 
   # Legacy IT Support responses (keeping for backward compatibility)
@@ -341,6 +346,7 @@ actions:
   # nopCommerce E-Commerce actions
   - action_greet
   - action_kb_search
+  - action_kb_cache_status
   - action_nopcommerce_login
   - action_search_products
   - action_get_product_details

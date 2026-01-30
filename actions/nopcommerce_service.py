@@ -401,39 +401,230 @@ class NopCommerceService:
             "short_description": product.get("short_description") or product.get("ShortDescription") or "",
             "full_description": product.get("full_description") or product.get("FullDescription") or "",
             "sku": product.get("sku") or product.get("Sku") or "",
+            "gtin": product.get("gtin") or product.get("Gtin") or "",
+            "manufacturer_part_number": product.get("manufacturer_part_number") or product.get("ManufacturerPartNumber") or "",
             "price": product.get("price") or product.get("Price") or 0,
             "old_price": product.get("old_price") or product.get("OldPrice"),
+            "special_price": product.get("special_price") or product.get("SpecialPrice"),
+            "discount_amount": product.get("discount_amount") or product.get("DiscountAmount"),
+            "cost": product.get("product_cost") or product.get("ProductCost"),
             "stock_quantity": product.get("stock_quantity") or product.get("StockQuantity") or 0,
             "in_stock": (product.get("stock_quantity") or product.get("StockQuantity") or 0) > 0,
+            "available_start_date": product.get("available_start_date_time_utc") or product.get("AvailableStartDateTimeUtc"),
+            "available_end_date": product.get("available_end_date_time_utc") or product.get("AvailableEndDateTimeUtc"),
+            "warehouse_id": product.get("warehouse_id") or product.get("WarehouseId"),
+            "min_stock_quantity": product.get("min_stock_quantity") or product.get("MinStockQuantity") or 0,
+            "notify_low_stock": product.get("notify_admin_for_quantity_below") or product.get("NotifyAdminForQuantityBelow"),
             "manage_inventory": product.get("manage_inventory_method") or product.get("ManageInventoryMethod"),
+            "allow_back_in_stock": product.get("allow_back_in_stock_subscriptions") or product.get("AllowBackInStockSubscriptions"),
+            "weight": product.get("weight") or product.get("Weight") or 0,
+            "length": product.get("length") or product.get("Length") or 0,
+            "width": product.get("width") or product.get("Width") or 0,
+            "height": product.get("height") or product.get("Height") or 0,
+            "is_free_shipping": product.get("is_free_shipping") or product.get("IsFreeShipping") or False,
+            "additional_shipping_charge": product.get("additional_shipping_charge") or product.get("AdditionalShippingCharge") or 0,
+            "is_tax_exempt": product.get("is_tax_exempt") or product.get("IsTaxExempt") or False,
+            "tax_category_id": product.get("tax_category_id") or product.get("TaxCategoryId"),
+            "published": product.get("published") or product.get("Published") or False,
+            "deleted": product.get("deleted") or product.get("Deleted") or False,
+            "created_on": product.get("created_on_utc") or product.get("CreatedOnUtc"),
+            "updated_on": product.get("updated_on_utc") or product.get("UpdatedOnUtc"),
+            "product_type": product.get("product_type") or product.get("ProductType") or product.get("product_type_id") or product.get("ProductTypeId"),
+            "vendor_id": product.get("vendor_id") or product.get("VendorId"),
+            "vendor_name": product.get("vendor_name") or product.get("VendorName") or "",
+            "manufacturer_id": product.get("manufacturer_id") or product.get("ManufacturerId"),
+            "manufacturer_name": product.get("manufacturer_name") or product.get("ManufacturerName") or "",
+            "approved_rating_sum": product.get("approved_rating_sum") or product.get("ApprovedRatingSum") or 0,
+            "approved_total_reviews": product.get("approved_total_reviews") or product.get("ApprovedTotalReviews") or 0,
+            "average_rating": self._calculate_average_rating(product),
+            "display_order": product.get("display_order") or product.get("DisplayOrder") or 0,
+            "order_minimum_quantity": product.get("order_minimum_quantity") or product.get("OrderMinimumQuantity") or 1,
+            "order_maximum_quantity": product.get("order_maximum_quantity") or product.get("OrderMaximumQuantity") or 10000,
+            "disable_buy_button": product.get("disable_buy_button") or product.get("DisableBuyButton") or False,
+            "disable_wishlist_button": product.get("disable_wishlist_button") or product.get("DisableWishlistButton") or False,
+            "call_for_price": product.get("call_for_price") or product.get("CallForPrice") or False,
+            "is_rental": product.get("is_rental") or product.get("IsRental") or False,
+            "is_downloadable": product.get("is_download") or product.get("IsDownload") or False,
+            "mark_as_new": product.get("mark_as_new") or product.get("MarkAsNew") or False,
             "image_url": self._get_product_image(product),
-            "categories": product.get("categories") or product.get("Categories") or []
+            "images": product.get("images") or product.get("Images") or product.get("product_pictures") or product.get("ProductPictures") or [],
+            "categories": product.get("categories") or product.get("Categories") or [],
+            "tags": product.get("tags") or product.get("Tags") or product.get("product_tags") or product.get("ProductTags") or [],
+            "attributes": product.get("attributes") or product.get("Attributes") or product.get("product_attributes") or product.get("ProductAttributes") or [],
+            "tier_prices": product.get("tier_prices") or product.get("TierPrices") or [],
+            "related_products": product.get("related_products") or product.get("RelatedProducts") or [],
+            "cross_sell_products": product.get("cross_sells") or product.get("CrossSells") or []
         }
+
+    def _calculate_average_rating(self, product: Dict[str, Any]) -> float:
+        """Calculate average rating from approved rating sum and total reviews."""
+        rating_sum = product.get("approved_rating_sum") or product.get("ApprovedRatingSum") or 0
+        total_reviews = product.get("approved_total_reviews") or product.get("ApprovedTotalReviews") or 0
+        if total_reviews > 0:
+            return round(rating_sum / total_reviews, 2)
+        return 0.0
 
     def _normalize_customer(self, customer: Dict[str, Any]) -> Dict[str, Any]:
         """Normalize customer data."""
         return {
             "id": customer.get("id") or customer.get("Id"),
+            "customer_guid": customer.get("customer_guid") or customer.get("CustomerGuid"),
             "email": customer.get("email") or customer.get("Email"),
             "username": customer.get("username") or customer.get("Username") or customer.get("email"),
             "first_name": customer.get("first_name") or customer.get("FirstName"),
             "last_name": customer.get("last_name") or customer.get("LastName"),
             "full_name": customer.get("full_name") or customer.get("FullName") or f"{customer.get('first_name', '')} {customer.get('last_name', '')}".strip(),
+            "gender": customer.get("gender") or customer.get("Gender"),
+            "date_of_birth": customer.get("date_of_birth") or customer.get("DateOfBirth"),
+            "company": customer.get("company") or customer.get("Company") or "",
             "phone": customer.get("phone") or customer.get("Phone"),
-            "is_active": customer.get("is_active") or customer.get("IsActive"),
+            "fax": customer.get("fax") or customer.get("Fax") or "",
+            "vat_number": customer.get("vat_number") or customer.get("VatNumber") or "",
+            "vat_number_status": customer.get("vat_number_status_id") or customer.get("VatNumberStatusId"),
+            "timezone_id": customer.get("time_zone_id") or customer.get("TimeZoneId"),
+            "language_id": customer.get("language_id") or customer.get("LanguageId"),
+            "currency_id": customer.get("currency_id") or customer.get("CurrencyId"),
+            "is_active": customer.get("is_active") or customer.get("Active") or customer.get("IsActive"),
+            "deleted": customer.get("deleted") or customer.get("Deleted") or False,
+            "is_system_account": customer.get("is_system_account") or customer.get("IsSystemAccount") or False,
+            "system_name": customer.get("system_name") or customer.get("SystemName") or "",
+            "admin_comment": customer.get("admin_comment") or customer.get("AdminComment") or "",
+            "is_tax_exempt": customer.get("is_tax_exempt") or customer.get("IsTaxExempt") or False,
+            "affiliate_id": customer.get("affiliate_id") or customer.get("AffiliateId"),
+            "vendor_id": customer.get("vendor_id") or customer.get("VendorId"),
+            "registered_in_store_id": customer.get("registered_in_store_id") or customer.get("RegisteredInStoreId"),
+            "created_on": customer.get("created_on_utc") or customer.get("CreatedOnUtc"),
+            "last_activity_date": customer.get("last_activity_date_utc") or customer.get("LastActivityDateUtc"),
+            "last_login_date": customer.get("last_login_date_utc") or customer.get("LastLoginDateUtc"),
+            "last_ip_address": customer.get("last_ip_address") or customer.get("LastIpAddress") or "",
+            "billing_address": self._normalize_address(customer.get("billing_address") or customer.get("BillingAddress")),
+            "shipping_address": self._normalize_address(customer.get("shipping_address") or customer.get("ShippingAddress")),
+            "addresses": [self._normalize_address(a) for a in (customer.get("addresses") or customer.get("Addresses") or [])],
+            "customer_roles": customer.get("customer_roles") or customer.get("CustomerRoles") or customer.get("roles") or customer.get("Roles") or [],
+            "shopping_cart_items": customer.get("shopping_cart_items") or customer.get("ShoppingCartItems") or [],
+            "reward_points_balance": customer.get("reward_points_balance") or customer.get("RewardPointsBalance") or 0,
+            "has_orders": customer.get("has_orders") or customer.get("HasOrders") or False,
+            "order_count": customer.get("order_count") or customer.get("OrderCount") or 0,
+            "total_spent": customer.get("total_spent") or customer.get("TotalSpent") or 0,
+            "avatar_url": customer.get("avatar_url") or customer.get("AvatarUrl") or "",
+            "newsletter_subscribed": customer.get("newsletter_subscribed") or customer.get("NewsletterSubscribed") or False,
+            "custom_attributes": customer.get("custom_customer_attributes") or customer.get("CustomCustomerAttributes") or ""
+        }
+
+    def _normalize_address(self, address: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        """Normalize address data."""
+        if not address:
+            return None
+        return {
+            "id": address.get("id") or address.get("Id"),
+            "first_name": address.get("first_name") or address.get("FirstName") or "",
+            "last_name": address.get("last_name") or address.get("LastName") or "",
+            "email": address.get("email") or address.get("Email") or "",
+            "company": address.get("company") or address.get("Company") or "",
+            "country_id": address.get("country_id") or address.get("CountryId"),
+            "country": address.get("country") or address.get("Country") or "",
+            "state_province_id": address.get("state_province_id") or address.get("StateProvinceId"),
+            "state_province": address.get("state_province") or address.get("StateProvince") or "",
+            "county": address.get("county") or address.get("County") or "",
+            "city": address.get("city") or address.get("City") or "",
+            "address1": address.get("address1") or address.get("Address1") or "",
+            "address2": address.get("address2") or address.get("Address2") or "",
+            "zip_postal_code": address.get("zip_postal_code") or address.get("ZipPostalCode") or "",
+            "phone_number": address.get("phone_number") or address.get("PhoneNumber") or "",
+            "fax_number": address.get("fax_number") or address.get("FaxNumber") or "",
+            "custom_attributes": address.get("custom_attributes") or address.get("CustomAttributes") or "",
+            "created_on": address.get("created_on_utc") or address.get("CreatedOnUtc")
         }
 
     def _normalize_order(self, order: Dict[str, Any]) -> Dict[str, Any]:
         """Normalize order data."""
         return {
             "id": order.get("id") or order.get("Id"),
+            "order_guid": order.get("order_guid") or order.get("OrderGuid"),
             "order_number": order.get("custom_order_number") or order.get("order_number") or order.get("id") or order.get("Id"),
+            "store_id": order.get("store_id") or order.get("StoreId"),
+            "customer_id": order.get("customer_id") or order.get("CustomerId"),
+            "customer_email": order.get("customer_email") or order.get("CustomerEmail") or "",
+            "customer_name": order.get("customer_name") or order.get("CustomerName") or "",
+            "customer_ip": order.get("customer_ip") or order.get("CustomerIp") or "",
             "status": order.get("order_status") or order.get("OrderStatus") or order.get("status") or order.get("Status") or "Unknown",
+            "order_status_id": order.get("order_status_id") or order.get("OrderStatusId"),
             "payment_status": order.get("payment_status") or order.get("PaymentStatus"),
+            "payment_status_id": order.get("payment_status_id") or order.get("PaymentStatusId"),
             "shipping_status": order.get("shipping_status") or order.get("ShippingStatus"),
+            "shipping_status_id": order.get("shipping_status_id") or order.get("ShippingStatusId"),
+            "payment_method": order.get("payment_method_system_name") or order.get("PaymentMethodSystemName") or "",
+            "card_type": order.get("card_type") or order.get("CardType") or "",
+            "card_name": order.get("card_name") or order.get("CardName") or "",
+            "card_number_masked": order.get("masked_credit_card_number") or order.get("MaskedCreditCardNumber") or "",
+            "authorization_transaction_id": order.get("authorization_transaction_id") or order.get("AuthorizationTransactionId") or "",
+            "capture_transaction_id": order.get("capture_transaction_id") or order.get("CaptureTransactionId") or "",
+            "paid_date": order.get("paid_date_utc") or order.get("PaidDateUtc"),
+            "shipping_method": order.get("shipping_method") or order.get("ShippingMethod") or "",
+            "shipping_rate_provider": order.get("shipping_rate_computation_method_system_name") or order.get("ShippingRateComputationMethodSystemName") or "",
+            "tracking_number": order.get("tracking_number") or order.get("TrackingNumber") or "",
+            "shipped_date": order.get("shipped_date_utc") or order.get("ShippedDateUtc"),
+            "delivery_date": order.get("delivery_date_utc") or order.get("DeliveryDateUtc"),
+            "pickup_in_store": order.get("pickup_in_store") or order.get("PickupInStore") or False,
+            "pickup_address": self._normalize_address(order.get("pickup_address") or order.get("PickupAddress")),
+            "order_subtotal": order.get("order_subtotal_incl_tax") or order.get("OrderSubtotalInclTax") or order.get("order_subtotal") or order.get("OrderSubtotal") or 0,
+            "order_subtotal_excl_tax": order.get("order_subtotal_excl_tax") or order.get("OrderSubtotalExclTax") or 0,
+            "order_subtotal_discount": order.get("order_sub_total_discount_incl_tax") or order.get("OrderSubTotalDiscountInclTax") or 0,
+            "order_shipping": order.get("order_shipping_incl_tax") or order.get("OrderShippingInclTax") or order.get("order_shipping") or order.get("OrderShipping") or 0,
+            "order_shipping_excl_tax": order.get("order_shipping_excl_tax") or order.get("OrderShippingExclTax") or 0,
+            "payment_method_additional_fee": order.get("payment_method_additional_fee_incl_tax") or order.get("PaymentMethodAdditionalFeeInclTax") or 0,
+            "order_tax": order.get("order_tax") or order.get("OrderTax") or 0,
+            "tax_rates": order.get("tax_rates") or order.get("TaxRates") or "",
+            "order_discount": order.get("order_discount") or order.get("OrderDiscount") or 0,
             "total": order.get("order_total") or order.get("OrderTotal") or order.get("total") or 0,
+            "refunded_amount": order.get("refunded_amount") or order.get("RefundedAmount") or 0,
+            "reward_points_earned": order.get("reward_points_history_entry_id") or order.get("RewardPointsHistoryEntryId"),
+            "reward_points_used": order.get("redeemed_reward_points") or order.get("RedeemedRewardPoints") or 0,
+            "reward_points_value": order.get("redeemed_reward_points_amount") or order.get("RedeemedRewardPointsAmount") or 0,
+            "checkout_attribute_description": order.get("checkout_attribute_description") or order.get("CheckoutAttributeDescription") or "",
+            "customer_currency_code": order.get("customer_currency_code") or order.get("CustomerCurrencyCode") or "",
+            "currency_rate": order.get("currency_rate") or order.get("CurrencyRate") or 1,
+            "affiliate_id": order.get("affiliate_id") or order.get("AffiliateId"),
+            "customer_language_id": order.get("customer_language_id") or order.get("CustomerLanguageId"),
+            "customer_tax_display_type": order.get("customer_tax_display_type_id") or order.get("CustomerTaxDisplayTypeId"),
+            "vat_number": order.get("vat_number") or order.get("VatNumber") or "",
+            "billing_address": self._normalize_address(order.get("billing_address") or order.get("BillingAddress")),
+            "shipping_address": self._normalize_address(order.get("shipping_address") or order.get("ShippingAddress")),
+            "allow_storing_credit_card": order.get("allow_storing_credit_card_number") or order.get("AllowStoringCreditCardNumber") or False,
+            "deleted": order.get("deleted") or order.get("Deleted") or False,
             "created_on": order.get("created_on") or order.get("CreatedOn") or order.get("created_on_utc") or order.get("CreatedOnUtc"),
-            "items": order.get("order_items") or order.get("OrderItems") or order.get("items") or []
+            "order_notes": order.get("order_notes") or order.get("OrderNotes") or [],
+            "items": [self._normalize_order_item(item) for item in (order.get("order_items") or order.get("OrderItems") or order.get("items") or [])],
+            "total_items": order.get("total_items") or order.get("TotalItems") or len(order.get("order_items") or order.get("OrderItems") or order.get("items") or []),
+            "shipments": order.get("shipments") or order.get("Shipments") or [],
+            "gift_cards": order.get("gift_card_usage_history") or order.get("GiftCardUsageHistory") or [],
+            "discount_codes": order.get("discount_usage_history") or order.get("DiscountUsageHistory") or []
+        }
+
+    def _normalize_order_item(self, item: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize order item data."""
+        return {
+            "id": item.get("id") or item.get("Id"),
+            "order_item_guid": item.get("order_item_guid") or item.get("OrderItemGuid"),
+            "product_id": item.get("product_id") or item.get("ProductId"),
+            "product_name": item.get("product_name") or item.get("ProductName") or "",
+            "sku": item.get("sku") or item.get("Sku") or "",
+            "quantity": item.get("quantity") or item.get("Quantity") or 0,
+            "unit_price_incl_tax": item.get("unit_price_incl_tax") or item.get("UnitPriceInclTax") or 0,
+            "unit_price_excl_tax": item.get("unit_price_excl_tax") or item.get("UnitPriceExclTax") or 0,
+            "price_incl_tax": item.get("price_incl_tax") or item.get("PriceInclTax") or 0,
+            "price_excl_tax": item.get("price_excl_tax") or item.get("PriceExclTax") or 0,
+            "discount_amount_incl_tax": item.get("discount_amount_incl_tax") or item.get("DiscountAmountInclTax") or 0,
+            "discount_amount_excl_tax": item.get("discount_amount_excl_tax") or item.get("DiscountAmountExclTax") or 0,
+            "original_product_cost": item.get("original_product_cost") or item.get("OriginalProductCost") or 0,
+            "attribute_description": item.get("attribute_description") or item.get("AttributeDescription") or "",
+            "attributes_xml": item.get("attributes_xml") or item.get("AttributesXml") or "",
+            "download_count": item.get("download_count") or item.get("DownloadCount") or 0,
+            "is_download_activated": item.get("is_download_activated") or item.get("IsDownloadActivated") or False,
+            "license_download_id": item.get("license_download_id") or item.get("LicenseDownloadId"),
+            "rental_start_date": item.get("rental_start_date_utc") or item.get("RentalStartDateUtc"),
+            "rental_end_date": item.get("rental_end_date_utc") or item.get("RentalEndDateUtc"),
+            "item_weight": item.get("item_weight") or item.get("ItemWeight")
         }
 
     # =========================================================================
@@ -776,92 +967,90 @@ class NopCommerceService:
     # =========================================================================
     
     def search_products(
-        self, 
-        query: str = None, 
-        category_id: int = None, 
+        self,
+        query: str = None,
+        category_id: int = None,
         page: int = 1,
         limit: int = 10
     ) -> Dict[str, Any]:
         """
-        Search for products.
-        
+        Search for products via Admin API find endpoint.
+
         Args:
             query: Search keyword
             category_id: Filter by category ID
             page: Page number for pagination
             limit: Number of results per page
-            
+
         Returns:
             Dict with 'success', 'products', 'total_count', 'error'
         """
-        # Build query parameters
-        params = {
-            "page": page,
-            "limit": limit,
-            "fields": "id,name,short_description,price,stock_quantity,images"
-        }
-        
-        if query:
-            params["filter"] = f"name:like:{query}"
-            params["q"] = query
-            params["keyword"] = query
-        
-        if category_id:
-            params["category_id"] = category_id
-        
-        # Try different endpoints
-        endpoints = [
-            "/products",
-            "/api/products",
-            "/api/PublicCatalog/Search"
-        ]
-        
-        for endpoint in endpoints:
+        if not query:
+            return {
+                "success": False,
+                "products": [],
+                "total_count": 0,
+                "error": "No search query provided."
+            }
+
+        # Use admin find endpoint: /api/admin/products/find/{query} (partial match on ID/SKU/name)
+        response = self._admin_request("GET", f"/api/admin/products/find/{query}")
+        if response and response.status_code == 200:
             try:
-                url = f"{self.api_url}{endpoint}"
-                headers = self._get_auth_headers()
-                response = requests.get(url, headers=headers, params=params, timeout=15, verify=self.verify_ssl)
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    
-                    # Handle different response formats
-                    products = data.get("products") or data.get("Products") or data
-                    if isinstance(products, dict):
-                        products = products.get("items") or products.get("Items") or [products]
-                    
-                    if not isinstance(products, list):
-                        products = [products] if products else []
-                    
-                    # Normalize product data
-                    normalized_products = []
-                    for p in products[:limit]:
-                        normalized_products.append({
-                            "id": p.get("id") or p.get("Id"),
-                            "name": p.get("name") or p.get("Name"),
-                            "short_description": p.get("short_description") or p.get("ShortDescription") or "",
-                            "price": p.get("price") or p.get("Price") or 0,
-                            "stock_quantity": p.get("stock_quantity") or p.get("StockQuantity") or 0,
-                            "in_stock": (p.get("stock_quantity") or p.get("StockQuantity") or 0) > 0,
-                            "image_url": self._get_product_image(p)
-                        })
-                    
-                    return {
-                        "success": True,
-                        "products": normalized_products,
-                        "total_count": data.get("total_count") or len(normalized_products),
-                        "error": None
-                    }
-                    
-            except requests.exceptions.RequestException as e:
-                logger.debug(f"Product search at {endpoint} failed: {e}")
-                continue
-        
+                data = response.json()
+
+                # Handle both single product and list responses
+                products = (
+                    data.get("products") or data.get("Products") or
+                    data.get("product") or data.get("Product") or
+                    data
+                )
+                if isinstance(products, dict):
+                    items = products.get("items") or products.get("Items")
+                    products = items if items else [products]
+                if not isinstance(products, list):
+                    products = [products] if products else []
+
+                normalized_products = []
+                for p in products[:limit]:
+                    normalized_products.append({
+                        "id": p.get("id") or p.get("Id"),
+                        "name": p.get("name") or p.get("Name"),
+                        "short_description": p.get("short_description") or p.get("ShortDescription") or "",
+                        "price": p.get("price") or p.get("Price") or 0,
+                        "stock_quantity": p.get("stock_quantity") or p.get("StockQuantity") or 0,
+                        "in_stock": (p.get("stock_quantity") or p.get("StockQuantity") or 0) > 0,
+                        "image_url": self._get_product_image(p)
+                    })
+
+                return {
+                    "success": True,
+                    "products": normalized_products,
+                    "total_count": data.get("total_count") or len(normalized_products),
+                    "error": None
+                }
+            except Exception as e:
+                logger.error(f"Admin product find returned 200 but failed to parse: {e}")
+                return {
+                    "success": False,
+                    "products": [],
+                    "total_count": 0,
+                    "error": f"Failed to parse product search response: {e}"
+                }
+
+        # Log the failure
+        if response:
+            logger.error(f"Admin product find returned status {response.status_code} for query '{query}'")
+            error_msg = f"Product search failed with status {response.status_code}"
+        else:
+            logger.error(f"Admin product find request failed for query '{query}' (no response)")
+            error_msg = "Failed to connect to product search API."
+
         return {
             "success": False,
             "products": [],
             "total_count": 0,
-            "error": "Failed to search products. Please try again."
+            "error": error_msg
         }
     
     def _get_product_image(self, product: Dict) -> Optional[str]:
@@ -1127,6 +1316,7 @@ class NopCommerceService:
                     "tax": order.get("tax"),
                     "created_on": order.get("created_on"),
                     "items": order.get("items") or [],
+                    "total_items": order.get("total_items"),
                     "shipping_address": order.get("shipping_address"),
                     "billing_address": order.get("billing_address"),
                 },
@@ -1174,6 +1364,7 @@ class NopCommerceService:
                             "tax": order.get("order_tax") or order.get("OrderTax") or 0,
                             "created_on": order.get("created_on_utc") or order.get("CreatedOnUtc"),
                             "items": normalized_items,
+                            "total_items": order.get("total_items") or order.get("TotalItems"),
                             "shipping_address": order.get("shipping_address") or order.get("ShippingAddress"),
                             "billing_address": order.get("billing_address") or order.get("BillingAddress"),
                         },
@@ -1237,7 +1428,8 @@ class NopCommerceService:
                     "message": tracking_message,
                     "total": order.get("total"),
                     "created_on": order.get("created_on"),
-                    "items_count": len(order.get("items", []))
+                    "items_count": len(order.get("items", [])),
+                    "total_items": order.get("total_items", 0)
                 },
                 "error": None
             }

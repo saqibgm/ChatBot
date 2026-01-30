@@ -296,15 +296,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             return;
         }
 
-        // Get Invoice - needs order ID
-        if (payload === '/get_invoice' || payload.startsWith('/get_invoice{')) {
-            const data = extractPayloadData(payload, '/get_invoice');
-            if (data?.order_id) {
-                setSearchQuery(String(data.order_id));
-            }
-            openSearchPopup('invoice');
-            return;
-        }
+        // Get Invoice - auto-detects order ID on backend (no popup needed)
 
         // Update Stock - needs product ID + quantity (ALWAYS show popup)
         if (payload === '/update_stock' || payload.startsWith('/update_stock{')) {
@@ -598,8 +590,8 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             key: 'product',
             label: 'Product',
             icon: Package,
-            placeholder: 'Enter product ID or name',
-            buildMessage: (q) => `/search_products{"search_query":"${q}"}`
+            placeholder: 'Enter product ID (number)',
+            buildMessage: (q) => `/product_details{"product_id":"${q}"}`
         },
         {
             key: 'order',
@@ -612,8 +604,8 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             key: 'customer',
             label: 'Customer',
             icon: Users,
-            placeholder: 'Enter customer ID or email',
-            buildMessage: (q) => `/admin_find_customer{"customer_id":"${q}"}`
+            placeholder: 'Enter customer ID (number)',
+            buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`
         },
         {
             key: 'invoice',

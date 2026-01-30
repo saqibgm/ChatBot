@@ -288,7 +288,7 @@ class ActionSearchProducts(Action):
             if isinstance(latest_msg, dict):
                 # Try entities first
                 for entity in latest_msg.get("entities", []):
-                    if entity.get("entity") == "product_name":
+                    if entity.get("entity") in ("product_name", "search_query"):
                         search_query = entity.get("value")
                         break
                 
@@ -312,22 +312,23 @@ class ActionSearchProducts(Action):
         
         service = get_nop_service_cached()
         result = service.search_products(query=search_query, limit=10)
-        
+        logger.info(f"ActionSearchProducts: search result success={result['success']}, products={len(result.get('products', []))}, error={result.get('error')}")
+
         if result["success"] and result["products"]:
             products = result["products"]
-            
+
             message = f"**🔍 Search Results for '{search_query}'** ({len(products)} found)\n\n"
             message += "| Product | Price | Stock |\n"
             message += "| :--- | :--- | :--- |\n"
-            
+
             for p in products[:10]:
                 name = p.get("name", "Unknown")[:30]
                 price = p.get("price", 0)
                 stock = "✅ In Stock" if p.get("in_stock") else "❌ Out of Stock"
                 product_id = p.get("id")
-                
+
                 message += f"| **{name}** (ID: {product_id}) | ${price:.2f} | {stock} |\n"
-            
+
             dispatcher.utter_message(
                 text=message,
                 buttons=[
@@ -335,8 +336,18 @@ class ActionSearchProducts(Action):
                     {"title": "🔍 Search Again", "payload": "/search_products"}
                 ]
             )
-            
+
             return [SlotSet("search_query", search_query)]
+        elif not result["success"]:
+            error_detail = result.get("error", "Unknown error")
+            logger.error(f"ActionSearchProducts: API error for query '{search_query}': {error_detail}")
+            dispatcher.utter_message(
+                text=f"❌ Could not search products. Error: {error_detail}",
+                buttons=[
+                    {"title": "🔍 Try Again", "payload": "/search_products"}
+                ]
+            )
+            return [SlotSet("search_query", None)]
         else:
             dispatcher.utter_message(
                 text=f"❌ No products found matching '**{search_query}**'. Try a different search term.",
@@ -393,10 +404,20 @@ class ActionGetProductDetails(Action):
             message += "| :--- | :--- |\n"
             message += f"| **SKU** | {p.get('sku', 'N/A')} |\n"
             message += f"| **Price** | ${p.get('price', 0):.2f} |\n"
-            
+
             if p.get("old_price"):
                 message += f"| **Was** | ~~${p.get('old_price'):.2f}~~ |\n"
-            
+
+            # Show additional price fields if available
+            if p.get("min_price"):
+                message += f"| **Min Price** | ${p.get('min_price'):.2f} |\n"
+            if p.get("price_a"):
+                message += f"| **Price A** | ${p.get('price_a'):.2f} |\n"
+            if p.get("price_b"):
+                message += f"| **Price B** | ${p.get('price_b'):.2f} |\n"
+            if p.get("price_c"):
+                message += f"| **Price C** | ${p.get('price_c'):.2f} |\n"
+
             message += f"| **Stock** | {stock_status} ({stock_qty} units) |\n"
             
             if p.get("short_description"):
@@ -611,7 +632,8 @@ class ActionTrackOrder(Action):
             message += f"| **Payment** | {t.get('payment_status', 'N/A')} |\n"
             message += f"| **Shipping** | {t.get('shipping_status', 'N/A')} |\n"
             message += f"| **Total** | ${t.get('total', 0):.2f} |\n"
-            message += f"| **Items** | {t.get('items_count', 0)} products |\n"
+            message += f"| **Product Types** | {t.get('items_count', 0)} products |\n"
+            message += f"| **Total Items** | {t.get('total_items', 0)} items |\n"
             
             if t.get("created_on"):
                 message += f"| **Ordered On** | {t.get('created_on')[:10]} |\n"
@@ -643,26 +665,48 @@ class ActionGetInvoice(Action):
         self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]
     ) -> List[Dict[Text, Any]]:
         logger.info("ActionGetInvoice: Getting order invoice")
-        
-        # Get order ID
-        order_id = tracker.get_slot("order_id")
-        
+
+        # Get order ID from entities first (highest priority)
+        order_id = None
+        for entity in tracker.latest_message.get("entities", []):
+            if entity.get("entity") == "order_id":
+                order_id = entity.get("value")
+                break
+
+        # If not in entities, try slot
         if not order_id:
-            for entity in tracker.latest_message.get("entities", []):
-                if entity.get("entity") == "order_id":
-                    order_id = entity.get("value")
-                    break
-        
+            order_id = tracker.get_slot("order_id")
+
+        # If still no order_id, try to get the most recent order for the customer
         if not order_id:
-            dispatcher.utter_message(text="Please provide the **Order ID** to get the invoice.")
+            customer_id = tracker.get_slot("customer_id")
+            if customer_id:
+                logger.info(f"No order_id provided, fetching most recent order for customer {customer_id}")
+                service = get_nop_service_cached()
+                orders_result = service.get_customer_orders(customer_id=customer_id, limit=1)
+
+                if orders_result.get("success") and orders_result.get("orders"):
+                    order_id = orders_result["orders"][0].get("id")
+                    logger.info(f"Found most recent order: {order_id}")
+
+        # If still no order_id, prompt user
+        if not order_id:
+            dispatcher.utter_message(
+                text="📋 Please track an order first, then you can get the invoice.",
+                buttons=[
+                    {"title": "🛒 Track Order", "payload": "/track_order"},
+                    {"title": "📋 View My Orders", "payload": "/list_orders"}
+                ]
+            )
             return []
         
         try:
             order_id = int(str(order_id).replace("#", "").strip())
+            logger.info(f"Generating invoice for order: {order_id}")
         except ValueError:
             dispatcher.utter_message(text="❌ Invalid order ID.")
             return []
-        
+
         service = get_nop_service_cached()
         result = service.get_order_invoice_pdf(order_id)
         
@@ -803,19 +847,26 @@ class ActionListOrders(Action):
         
         if result["success"] and result["orders"]:
             orders = result["orders"]
-            
+
             message = f"**📋 Your Orders** ({len(orders)} found)\n\n"
             message += "| Order # | Status | Total | Date |\n"
             message += "| :--- | :--- | :--- | :--- |\n"
-            
+
+            # Track the most recent order_id for invoice generation
+            most_recent_order_id = None
+
             for o in orders[:10]:
                 order_id = o.get("id")
                 status = o.get("status", "Unknown")
                 total = o.get("total", 0)
                 date = o.get("created_on", "")[:10] if o.get("created_on") else "N/A"
-                
+
+                # Save the first (most recent) order ID
+                if most_recent_order_id is None:
+                    most_recent_order_id = order_id
+
                 message += f"| **#{order_id}** | {status} | ${total:.2f} | {date} |\n"
-            
+
             dispatcher.utter_message(
                 text=message,
                 buttons=[
@@ -823,6 +874,9 @@ class ActionListOrders(Action):
                     {"title": "🧾 Get Invoice", "payload": "/get_invoice"}
                 ]
             )
+
+            # Set the most recent order_id to slot so "Get Invoice" can use it
+            return [SlotSet("order_id", str(most_recent_order_id) if most_recent_order_id else None)]
         else:
             dispatcher.utter_message(
                 text="📋 You don't have any orders yet.",
@@ -830,7 +884,7 @@ class ActionListOrders(Action):
                     {"title": "🔍 Browse Products", "payload": "/search_products"}
                 ]
             )
-        
+
         return []
 
 
@@ -871,6 +925,17 @@ class ActionAdminFindProduct(Action):
             message += f"| **ID** | {p.get('id')} |\n"
             message += f"| **SKU** | {p.get('sku', 'N/A')} |\n"
             message += f"| **Price** | ${p.get('price', 0):.2f} |\n"
+
+            # Show additional price fields if available
+            if p.get("min_price"):
+                message += f"| **Min Price** | ${p.get('min_price'):.2f} |\n"
+            if p.get("price_a"):
+                message += f"| **Price A** | ${p.get('price_a'):.2f} |\n"
+            if p.get("price_b"):
+                message += f"| **Price B** | ${p.get('price_b'):.2f} |\n"
+            if p.get("price_c"):
+                message += f"| **Price C** | ${p.get('price_c'):.2f} |\n"
+
             message += f"| **Stock** | {stock_status} ({stock_qty} units) |\n"
 
             dispatcher.utter_message(
@@ -1027,6 +1092,7 @@ class ActionAdminGetCustomerDetails(Action):
             message += "| :--- | :--- |\n"
             message += f"| **Name** | {c.get('full_name') or 'N/A'} |\n"
             message += f"| **Email** | {c.get('email') or 'N/A'} |\n"
+            message += f"| **Username** | {c.get('username') or 'N/A'} |\n"
             message += f"| **Phone** | {c.get('phone') or 'N/A'} |\n"
             message += f"| **Active** | {str(c.get('is_active', 'N/A'))} |\n"
             dispatcher.utter_message(
@@ -1217,7 +1283,7 @@ class ActionAdminMe(Action):
 # =============================================================================
 # Knowledge Base Search Action
 # =============================================================================
-from actions.conversation_db import search_kb
+from actions.conversation_db import search_kb, get_kb_cache_stats, refresh_kb_cache
 
 class ActionKbSearch(Action):
     def name(self) -> Text:
@@ -1226,31 +1292,31 @@ class ActionKbSearch(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
+
         # Get user's last message
         last_message = tracker.latest_message.get('text')
         if not last_message:
             dispatcher.utter_message(text="I'm sorry, I didn't catch that.")
             return []
 
-        # Search KB (SQL Chunk Search)
+        # Search KB (In-memory cache search - fast!)
         results = search_kb(last_message)
-        
+
         if results:
             # Get the best matching result (first one - highest score)
             best_match = results[0]
             title = best_match.get('title', 'Knowledge Base Article')
             content = best_match.get('content', '')
             url = best_match.get('url')
-            
+
             # Clean and format the content snippet
             snippet = content.strip().replace('\n', ' ')
             snippet = snippet[:500] + "..." if len(snippet) > 500 else snippet
-            
+
             # Build message with link
             link_text = f"🔗 [View Full Article]({url})" if url else ""
             message = f"📖 **{title}**\n{snippet}\n{link_text}"
-            
+
             dispatcher.utter_message(text=message)
         else:
             # Fallback message with helpful buttons
@@ -1262,5 +1328,36 @@ class ActionKbSearch(Action):
                     {"title": "👤 Customer", "payload": "/admin_find_customer"}
                 ]
             )
-            
+
+        return []
+
+
+class ActionKbCacheStatus(Action):
+    """Check knowledge base cache status and statistics."""
+
+    def name(self) -> Text:
+        return "action_kb_cache_status"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        # Get cache stats
+        stats = get_kb_cache_stats()
+
+        status_icon = "✅" if stats['enabled'] else "❌"
+
+        message = f"**{status_icon} Knowledge Base Cache Status**\n\n"
+        message += "| Property | Value |\n"
+        message += "| :--- | :--- |\n"
+        message += f"| **Status** | {'Enabled' if stats['enabled'] else 'Disabled'} |\n"
+        message += f"| **Articles** | {stats['articles_count']} |\n"
+        message += f"| **Chunks** | {stats['chunks_count']} |\n"
+        message += f"| **Cache Size** | {stats['cache_size_kb']:.2f} KB |\n"
+
+        if stats['loaded_at']:
+            message += f"| **Loaded At** | {stats['loaded_at']} |\n"
+
+        dispatcher.utter_message(text=message)
+
         return []

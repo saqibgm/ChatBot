@@ -33713,14 +33713,6 @@ if (typeof window !== "undefined" && !window.process) {
         openSearchPopup("stock_check");
         return;
       }
-      if (payload === "/get_invoice" || payload.startsWith("/get_invoice{")) {
-        const data = extractPayloadData(payload, "/get_invoice");
-        if (data?.order_id) {
-          setSearchQuery(String(data.order_id));
-        }
-        openSearchPopup("invoice");
-        return;
-      }
       if (payload === "/update_stock" || payload.startsWith("/update_stock{")) {
         const data = extractPayloadData(payload, "/update_stock");
         if (data?.product_id) {
@@ -33949,7 +33941,7 @@ Priority: ${data.priority}`;
             sender: "bot",
             text: "I'm not sure I understand. Here's what I can help you with:",
             buttons: [
-              { title: "� Order", payload: "/track_order" },
+              { title: "🛒 Order", payload: "/track_order" },
               { title: "📦 Product", payload: "/search_products" },
               { title: "👤 Customer", payload: "/admin_find_customer" }
             ]
@@ -33968,8 +33960,8 @@ Priority: ${data.priority}`;
         key: "product",
         label: "Product",
         icon: Package,
-        placeholder: "Enter product ID or name",
-        buildMessage: (q) => `/search_products{"search_query":"${q}"}`
+        placeholder: "Enter product ID (number)",
+        buildMessage: (q) => `/product_details{"product_id":"${q}"}`
       },
       {
         key: "order",
@@ -33982,8 +33974,8 @@ Priority: ${data.priority}`;
         key: "customer",
         label: "Customer",
         icon: Users,
-        placeholder: "Enter customer ID or email",
-        buildMessage: (q) => `/admin_find_customer{"customer_id":"${q}"}`
+        placeholder: "Enter customer ID (number)",
+        buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`
       },
       {
         key: "invoice",

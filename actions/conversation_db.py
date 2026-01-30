@@ -247,11 +247,98 @@ def _init_database():
     finally:
         _release_connection(conn)
 
+# Knowledge Base Cache
+_kb_cache = {
+    "articles": [],  # List of KB articles with chunks
+    "loaded_at": None,
+    "enabled": True
+}
+
+def _load_kb_cache():
+    """Load all knowledge base articles and chunks into memory cache."""
+    global _kb_cache
+
+    try:
+        conn = _get_connection()
+        try:
+            cursor = conn.cursor()
+
+            # Load all articles with their chunks
+            cursor.execute('''
+                SELECT k.id, k.title, k.url, c.content, c.chunk_index
+                FROM knowledge_base k
+                LEFT JOIN knowledge_base_chunks c ON k.id = c.article_id
+                ORDER BY k.id, c.chunk_index
+            ''')
+
+            rows = _fetchall_dict(cursor)
+
+            # Group chunks by article
+            articles_dict = {}
+            for row in rows:
+                article_id = row['id']
+                if article_id not in articles_dict:
+                    articles_dict[article_id] = {
+                        'id': article_id,
+                        'title': row['title'] or '',
+                        'url': row['url'] or '',
+                        'chunks': []
+                    }
+
+                if row['content']:
+                    articles_dict[article_id]['chunks'].append({
+                        'content': row['content'],
+                        'chunk_index': row['chunk_index'] or 0
+                    })
+
+            _kb_cache['articles'] = list(articles_dict.values())
+            _kb_cache['loaded_at'] = datetime.now()
+
+            count = len(_kb_cache['articles'])
+            chunks_count = sum(len(a['chunks']) for a in _kb_cache['articles'])
+            print(f"✓ Knowledge Base cached: {count} articles, {chunks_count} chunks loaded into memory")
+
+            return True
+
+        finally:
+            _release_connection(conn)
+
+    except Exception as e:
+        print(f"Warning: Could not load KB cache: {e}")
+        _kb_cache['enabled'] = False
+        return False
+
+def refresh_kb_cache():
+    """Manually refresh the knowledge base cache."""
+    return _load_kb_cache()
+
+def get_kb_cache_stats() -> Dict:
+    """Get knowledge base cache statistics."""
+    global _kb_cache
+
+    return {
+        'enabled': _kb_cache['enabled'],
+        'loaded_at': _kb_cache['loaded_at'].isoformat() if _kb_cache['loaded_at'] else None,
+        'articles_count': len(_kb_cache['articles']),
+        'chunks_count': sum(len(a['chunks']) for a in _kb_cache['articles']),
+        'cache_size_kb': sum(
+            len(a['title']) + len(a['url']) +
+            sum(len(c['content']) for c in a['chunks'])
+            for a in _kb_cache['articles']
+        ) / 1024
+    }
+
 # Initialize on load
 try:
     _init_database()
 except Exception as e:
     print(f"Warning: Could not initialize database: {e}")
+
+# Load KB cache on startup
+try:
+    _load_kb_cache()
+except Exception as e:
+    print(f"Warning: Could not load KB cache on startup: {e}")
 
 def log_conversation_start(sender_id: str, app_id: str = "General", user_id: str = None, user_name: str = None) -> int:
     """Log start of a new conversation. Returns conversation ID."""
@@ -380,8 +467,15 @@ def log_action(sender_id: str, action_name: str, success: bool = True, app_id: s
 
 
 
-def add_kb_article(title: str, content: str, url: str = None) -> bool:
-    """Add an article to the knowledge base."""
+def add_kb_article(title: str, content: str, url: str = None, refresh_cache: bool = True) -> bool:
+    """Add an article to the knowledge base.
+
+    Args:
+        title: Article title
+        content: Article content
+        url: Optional URL
+        refresh_cache: If True, reload KB cache after adding article (default: True)
+    """
     conn = _get_connection()
     try:
         cursor = conn.cursor()
@@ -395,6 +489,11 @@ def add_kb_article(title: str, content: str, url: str = None) -> bool:
                     (title, content, url)
                 )
                 conn.commit()
+
+                # Refresh cache to reflect updates
+                if refresh_cache:
+                    _load_kb_cache()
+
                 return True
 
         cursor.execute(
@@ -402,6 +501,11 @@ def add_kb_article(title: str, content: str, url: str = None) -> bool:
             (title, content, url)
         )
         conn.commit()
+
+        # Refresh cache to include new article
+        if refresh_cache:
+            _load_kb_cache()
+
         return True
     except Exception as e:
         print(f"Error adding KB article: {e}")
@@ -413,26 +517,131 @@ def search_kb(query: str) -> List[Dict]:
     """Search knowledge base chunks for query using exact and keyword matching.
     Returns list of dicts with: title, content, url, article_id
     Prioritizes title matches over content-only matches.
+
+    Uses in-memory cache for faster search if available, falls back to database.
     """
+    global _kb_cache
+
+    # Use cache if available and enabled
+    if _kb_cache['enabled'] and _kb_cache['articles']:
+        return _search_kb_cache(query)
+
+    # Fallback to database search
+    return _search_kb_database(query)
+
+def _search_kb_cache(query: str) -> List[Dict]:
+    """Search KB using in-memory cache (fast)."""
+    global _kb_cache
+
+    # Normalize query
+    query_lower = query.lower().strip()
+
+    # Extract keywords (filter stop words)
+    stop_words = {'how', 'to', 'do', 'i', 'the', 'a', 'an', 'in', 'on', 'at', 'for', 'of',
+                  'is', 'are', 'can', 'you', 'help', 'me', 'with', 'about', 'tell', 'show',
+                  'find', 'search', 'get', 'what', 'where', 'when', 'why', 'which', 'my',
+                  'please', 'need', 'want', 'would', 'could', 'should', 'have', 'has', 'had'}
+    words = [w for w in query_lower.split() if w.isalnum() and len(w) > 2 and w not in stop_words]
+
+    if not words:
+        # Fallback: try exact phrase in title
+        for article in _kb_cache['articles']:
+            if query_lower in article['title'].lower():
+                best_chunk = max(article['chunks'], key=lambda c: len(c['content'])) if article['chunks'] else None
+                if best_chunk:
+                    return [{
+                        'article_id': article['id'],
+                        'title': article['title'],
+                        'content': best_chunk['content'],
+                        'url': article['url']
+                    }]
+        return []
+
+    # Main keyword is typically the last content word
+    main_keyword = words[-1]
+
+    # STEP 1: Find article with main keyword in TITLE
+    for article in _kb_cache['articles']:
+        if main_keyword in article['title'].lower():
+            # Get longest chunk
+            best_chunk = max(article['chunks'], key=lambda c: len(c['content'])) if article['chunks'] else None
+            if best_chunk:
+                return [{
+                    'article_id': article['id'],
+                    'title': article['title'],
+                    'content': best_chunk['content'],
+                    'url': article['url']
+                }]
+
+    # STEP 2: Try with all keywords in title (AND logic)
+    if len(words) > 1:
+        for article in _kb_cache['articles']:
+            title_lower = article['title'].lower()
+            if all(w in title_lower for w in words):
+                best_chunk = max(article['chunks'], key=lambda c: len(c['content'])) if article['chunks'] else None
+                if best_chunk:
+                    return [{
+                        'article_id': article['id'],
+                        'title': article['title'],
+                        'content': best_chunk['content'],
+                        'url': article['url']
+                    }]
+
+    # STEP 3: Fall back to content search, prioritize title matches
+    best_match = None
+    best_score = -1
+
+    for article in _kb_cache['articles']:
+        title_lower = article['title'].lower()
+
+        # Check if any keyword matches title
+        title_has_main_keyword = main_keyword in title_lower
+        title_match_count = sum(1 for w in words if w in title_lower)
+
+        # Search in chunks
+        for chunk in article['chunks']:
+            content_lower = chunk['content'].lower()
+            content_match_count = sum(1 for w in words if w in content_lower)
+
+            if content_match_count > 0 or title_match_count > 0:
+                # Calculate score: prioritize title matches, then content length
+                score = (title_match_count * 1000) + (content_match_count * 100) + len(chunk['content'])
+
+                if title_has_main_keyword:
+                    score += 10000
+
+                if score > best_score:
+                    best_score = score
+                    best_match = {
+                        'article_id': article['id'],
+                        'title': article['title'],
+                        'content': chunk['content'],
+                        'url': article['url']
+                    }
+
+    return [best_match] if best_match else []
+
+def _search_kb_database(query: str) -> List[Dict]:
+    """Search KB using database queries (fallback)."""
     conn = _get_connection()
     try:
         cursor = conn.cursor()
-        
+
         # Normalize query
         query_lower = query.lower().strip()
-        
+
         # Extract keywords (filter stop words)
-        stop_words = {'how', 'to', 'do', 'i', 'the', 'a', 'an', 'in', 'on', 'at', 'for', 'of', 
-                      'is', 'are', 'can', 'you', 'help', 'me', 'with', 'about', 'tell', 'show', 
+        stop_words = {'how', 'to', 'do', 'i', 'the', 'a', 'an', 'in', 'on', 'at', 'for', 'of',
+                      'is', 'are', 'can', 'you', 'help', 'me', 'with', 'about', 'tell', 'show',
                       'find', 'search', 'get', 'what', 'where', 'when', 'why', 'which', 'my',
                       'please', 'need', 'want', 'would', 'could', 'should', 'have', 'has', 'had'}
         words = [w for w in query_lower.split() if w.isalnum() and len(w) > 2 and w not in stop_words]
-        
+
         if not words:
             # Fallback: try exact phrase
             search_term = f"%{query_lower}%"
             cursor.execute('''
-                SELECT TOP 1 k.id as article_id, k.title, c.content, k.url 
+                SELECT TOP 1 k.id as article_id, k.title, c.content, k.url
                 FROM knowledge_base_chunks c
                 JOIN knowledge_base k ON c.article_id = k.id
                 WHERE LOWER(k.title) LIKE ?
@@ -442,57 +651,57 @@ def search_kb(query: str) -> List[Dict]:
 
         # Main keyword is typically the last content word (e.g., "shipping" in "configure shipping")
         main_keyword = words[-1]
-        
+
         # STEP 1: First try to find article with main keyword in TITLE
         cursor.execute('''
-            SELECT TOP 1 k.id as article_id, k.title, c.content, k.url 
+            SELECT TOP 1 k.id as article_id, k.title, c.content, k.url
             FROM knowledge_base_chunks c
             JOIN knowledge_base k ON c.article_id = k.id
             WHERE LOWER(k.title) LIKE ?
             ORDER BY LEN(c.content) DESC
         ''', (f"%{main_keyword}%",))
         results = _fetchall_dict(cursor)
-        
+
         if results:
             return results
-        
+
         # STEP 2: Try with all keywords in title (AND logic)
         if len(words) > 1:
             title_conditions = " AND ".join([f"LOWER(k.title) LIKE ?" for _ in words])
             title_params = [f"%{w}%" for w in words]
-            
+
             cursor.execute(f'''
-                SELECT TOP 1 k.id as article_id, k.title, c.content, k.url 
+                SELECT TOP 1 k.id as article_id, k.title, c.content, k.url
                 FROM knowledge_base_chunks c
                 JOIN knowledge_base k ON c.article_id = k.id
                 WHERE {title_conditions}
                 ORDER BY LEN(c.content) DESC
             ''', tuple(title_params))
             results = _fetchall_dict(cursor)
-            
+
             if results:
                 return results
-        
+
         # STEP 3: Fall back to content search with keyword in title preferred
         # Search content but prioritize results where title also contains a keyword
         params = []
         for w in words:
             params.append(f"%{w}%")
             params.append(f"%{w}%")
-        
+
         where_conditions = " OR ".join([f"(LOWER(c.content) LIKE ? OR LOWER(k.title) LIKE ?)" for _ in words])
-        
+
         cursor.execute(f'''
-            SELECT TOP 1 k.id as article_id, k.title, c.content, k.url 
+            SELECT TOP 1 k.id as article_id, k.title, c.content, k.url
             FROM knowledge_base_chunks c
             JOIN knowledge_base k ON c.article_id = k.id
             WHERE {where_conditions}
-            ORDER BY 
+            ORDER BY
                 CASE WHEN LOWER(k.title) LIKE ? THEN 0 ELSE 1 END,
                 LEN(c.content) DESC
         ''', tuple(params) + (f"%{main_keyword}%",))
         results = _fetchall_dict(cursor)
-        
+
         return results
 
     finally:
