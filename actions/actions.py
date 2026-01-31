@@ -116,8 +116,8 @@ def get_analytics_context(tracker: Tracker) -> Dict[str, str]:
     app_id = metadata.get("app_id") if isinstance(metadata, dict) else None
     app_id = app_id or tracker.get_slot("app_id") or "General"
     
-    # Get user_id from slot (set after GLPI login)
-    user_id = tracker.get_slot("glpi_user_name") or tracker.get_slot("glpi_user_id")
+    # Get user_id from slot (set after Createl login)
+    user_id = tracker.get_slot("createl_user_name") or tracker.get_slot("createl_user_id")
     
     # Get ticket_id from slot if available (set during ticket operations)
     # This persists across the conversation session after a ticket is created/viewed
@@ -399,10 +399,12 @@ class ActionGetProductDetails(Action):
             stock_status = "✅ In Stock" if p.get("in_stock") else "❌ Out of Stock"
             stock_qty = p.get("stock_quantity", 0)
             
+            stock_icon = "✅" if p.get("in_stock") else "❌"
+
             message = f"**📦 Product Details: {p.get('name')}**\n\n"
-            message += "| Property | Value |\n"
-            message += "| :--- | :--- |\n"
             message += f"| **SKU** | {p.get('sku', 'N/A')} |\n"
+            message += "| :--- | :--- |\n"
+            message += f"| **Stock** | {stock_icon} {stock_qty} units |\n"
             message += f"| **Price** | ${p.get('price', 0):.2f} |\n"
 
             if p.get("old_price"):
@@ -411,15 +413,16 @@ class ActionGetProductDetails(Action):
             # Show additional price fields if available
             if p.get("min_price"):
                 message += f"| **Min Price** | ${p.get('min_price'):.2f} |\n"
-            if p.get("price_a"):
-                message += f"| **Price A** | ${p.get('price_a'):.2f} |\n"
-            if p.get("price_b"):
-                message += f"| **Price B** | ${p.get('price_b'):.2f} |\n"
-            if p.get("price_c"):
-                message += f"| **Price C** | ${p.get('price_c'):.2f} |\n"
 
-            message += f"| **Stock** | {stock_status} ({stock_qty} units) |\n"
-            
+            # Show tier prices in horizontal table
+            tier_a = p.get("price_a")
+            tier_b = p.get("price_b")
+            tier_c = p.get("price_c")
+            if tier_a or tier_b or tier_c:
+                message += f"\n| A | B | C |\n"
+                message += "| :---: | :---: | :---: |\n"
+                message += f"| ${tier_a:.2f} | ${tier_b:.2f} | ${tier_c:.2f} |\n"
+
             if p.get("short_description"):
                 message += f"\n📝 **Description:**\n{p.get('short_description')}\n"
             
@@ -488,11 +491,10 @@ class ActionCheckStock(Action):
                 status_icon = "❌"
                 status_text = "**Out of Stock**"
             
-            message = f"{status_icon} **{product_name}** (ID: {product_id})\n\n"
-            message += f"📦 Stock Status: {status_text}\n"
-            
-            if result.get("sku"):
-                message += f"🏷️ SKU: {result.get('sku')}"
+            message = f"**📦 {product_name}** (ID: {product_id})\n\n"
+            message += f"| **SKU** | {result.get('sku', 'N/A')} |\n"
+            message += "| :--- | :--- |\n"
+            message += f"| **Stock** | {status_icon} {stock_qty} units |\n"
             
             dispatcher.utter_message(
                 text=message,
@@ -919,24 +921,27 @@ class ActionAdminFindProduct(Action):
             stock_status = "✅ In Stock" if p.get("in_stock") else "❌ Out of Stock"
             stock_qty = p.get("stock_quantity", 0)
 
+            stock_icon = "✅" if p.get("in_stock") else "❌"
+
             message = f"**📦 Product Found: {p.get('name')}**\n\n"
-            message += "| Property | Value |\n"
-            message += "| :--- | :--- |\n"
             message += f"| **ID** | {p.get('id')} |\n"
+            message += "| :--- | :--- |\n"
             message += f"| **SKU** | {p.get('sku', 'N/A')} |\n"
+            message += f"| **Stock** | {stock_icon} {stock_qty} units |\n"
             message += f"| **Price** | ${p.get('price', 0):.2f} |\n"
 
             # Show additional price fields if available
             if p.get("min_price"):
                 message += f"| **Min Price** | ${p.get('min_price'):.2f} |\n"
-            if p.get("price_a"):
-                message += f"| **Price A** | ${p.get('price_a'):.2f} |\n"
-            if p.get("price_b"):
-                message += f"| **Price B** | ${p.get('price_b'):.2f} |\n"
-            if p.get("price_c"):
-                message += f"| **Price C** | ${p.get('price_c'):.2f} |\n"
 
-            message += f"| **Stock** | {stock_status} ({stock_qty} units) |\n"
+            # Show tier prices in horizontal table
+            tier_a = p.get("price_a")
+            tier_b = p.get("price_b")
+            tier_c = p.get("price_c")
+            if tier_a or tier_b or tier_c:
+                message += f"\n| A | B | C |\n"
+                message += "| :---: | :---: | :---: |\n"
+                message += f"| ${tier_a:.2f} | ${tier_b:.2f} | ${tier_c:.2f} |\n"
 
             dispatcher.utter_message(
                 text=message,

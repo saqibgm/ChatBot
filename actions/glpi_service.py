@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional, List
 
 logger = logging.getLogger(__name__)
 
-class GlpiService:
+class CreatelService:
     def __init__(self, api_uri: str, app_token: str, user_token: str):
         self.api_uri = api_uri
         self.app_token = app_token
@@ -13,7 +13,7 @@ class GlpiService:
 
     # --- Session Management ---
     def init_session(self) -> Optional[str]:
-        """Initializes a session with GLPI and returns the session token."""
+        """Initializes a session with Createl and returns the session token."""
         url = f"{self.api_uri}/initSession"
         headers = {
             "App-Token": self.app_token,
@@ -25,12 +25,12 @@ class GlpiService:
             session_token = response.json().get("session_token")
             return session_token
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI initSession failed: {e}")
+            logger.error(f"Createl initSession failed: {e}")
             return None
 
     def login_with_credentials(self, username: str, password: str) -> Dict[str, Any]:
         """
-        Authenticate user with GLPI using username and password.
+        Authenticate user with Createl using username and password.
         Uses HTTP Basic Auth to initSession.
         Returns dict with 'success', 'session_token', 'user_id', 'user_name', 'error'
         """
@@ -85,7 +85,7 @@ class GlpiService:
                 }
                 
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI login_with_credentials failed: {e}")
+            logger.error(f"Createl login_with_credentials failed: {e}")
             return {
                 "success": False,
                 "session_token": None,
@@ -107,10 +107,10 @@ class GlpiService:
                 data = response.json()
                 session = data.get("session", {})
                 return {
-                    "id": session.get("glpiID"),
-                    "name": session.get("glpiname"),
-                    "firstname": session.get("glpifirstname"),
-                    "realname": session.get("glpirealname")
+                    "id": session.get("createlID"),
+                    "name": session.get("createlname"),
+                    "firstname": session.get("createlfirstname"),
+                    "realname": session.get("createlrealname")
                 }
         except:
             pass
@@ -126,7 +126,7 @@ class GlpiService:
         try:
             requests.get(url, headers=headers, timeout=5)
         except requests.exceptions.RequestException as e:
-            logger.warning(f"GLPI killSession failed (might already be expired): {e}")
+            logger.warning(f"Createl killSession failed (might already be expired): {e}")
 
     def change_active_entities(self, session_token: str, entity_id: int, is_recursive: bool = True) -> bool:
         """Changes the active entity for the current session."""
@@ -143,9 +143,9 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI changeActiveEntities failed: {e}")
+            logger.error(f"Createl changeActiveEntities failed: {e}")
             if 'response' in locals() and response is not None:
-                 logger.error(f"GLPI Response: {response.text}")
+                 logger.error(f"Createl Response: {response.text}")
             return False
 
     # --- Helper Methods ---
@@ -158,14 +158,14 @@ class GlpiService:
             "Content-Type": "application/json",
         }
         if entity_id is not None:
-            headers["GLPI-Entity"] = str(entity_id)
-            logger.info(f"GLPI: headers: {headers}")    
+            headers["Createl-Entity"] = str(entity_id)
+            logger.info(f"Createl: headers: {headers}")    
         return headers
 
     # --- Ticket API ---
     def create_ticket(self, session_token: str, ticket_data: Dict[str, Any], entity_id: int = None) -> Optional[str]:
         """Creates a ticket and returns the new Ticket ID (or None on failure)."""
-        logger.info(f"GLPI: Creating ticket with data: {ticket_data}")
+        logger.info(f"Createl: Creating ticket with data: {ticket_data}")
         url = f"{self.api_uri}/Ticket"
         headers = self._get_execution_headers(session_token, entity_id)
         payload = {"input": ticket_data}
@@ -173,10 +173,10 @@ class GlpiService:
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=10)
             response.raise_for_status()
-            logger.info(f"GLPI: Ticket created successfully. Response: {response.text}")
+            logger.info(f"Createl: Ticket created successfully. Response: {response.text}")
             return response.json().get("id")
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI create_ticket failed: {e}")
+            logger.error(f"Createl create_ticket failed: {e}")
             return None
 
     def get_ticket(self, session_token: str, ticket_id: str, entity_id: int = None) -> Optional[Dict[str, Any]]:
@@ -188,7 +188,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_ticket failed: {e}")
+            logger.error(f"Createl get_ticket failed: {e}")
             return None
 
     def add_ticket_followup(self, session_token: str, ticket_id: int, content: str, entity_id: int = None) -> bool:
@@ -207,7 +207,7 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI add_ticket_followup failed: {e}")
+            logger.error(f"Createl add_ticket_followup failed: {e}")
             return False
 
     def get_ticket_followups(self, session_token: str, ticket_id: int, entity_id: int = None) -> List[Dict[str, Any]]:
@@ -219,17 +219,17 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_ticket_followups failed: {e}")
+            logger.error(f"Createl get_ticket_followups failed: {e}")
             return []
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_ticket_followups failed: {e}")
+            logger.error(f"Createl get_ticket_followups failed: {e}")
             return []
 
     def get_user_tickets(self, session_token: str, active_only: bool = True, entity_id: int = None, status_id: int = None) -> List[Dict[str, Any]]:
         """Retrieves tickets for the current user, optionally filtering for active only or specific status."""
         # Build URL with criteria
-        # Field 80 is entities_id in GLPI
+        # Field 80 is entities_id in Createl
         url = f"{self.api_uri}/Ticket?range=0-50&sort=date_mod&order=DESC"
         
         criteria_idx = 0
@@ -242,7 +242,7 @@ class GlpiService:
              url += f"&criteria[{criteria_idx}][field]=12&criteria[{criteria_idx}][searchtype]=equals&criteria[{criteria_idx}][value]={status_id}"
              criteria_idx += 1
              
-        logger.info(f"GLPI: URL: {url}")
+        logger.info(f"Createl: URL: {url}")
         logger.info(f"DEBUG: get_user_tickets entity_id={entity_id} status_id={status_id} criteria_idx={criteria_idx}")    
         headers = self._get_execution_headers(session_token, entity_id)
         try:
@@ -262,7 +262,7 @@ class GlpiService:
                 return all_tickets
                 
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_user_tickets failed: {e}")
+            logger.error(f"Createl get_user_tickets failed: {e}")
             return []
 
     def update_ticket_status(self, session_token: str, ticket_id: int, status_id: int, entity_id: int = None) -> bool:
@@ -280,9 +280,9 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI update_ticket_status failed: {e}")
+            logger.error(f"Createl update_ticket_status failed: {e}")
             if response is not None:
-                logger.error(f"GLPI Response: {response.text}")
+                logger.error(f"Createl Response: {response.text}")
             return False
 
     # --- User API ---
@@ -296,7 +296,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_all_users failed: {e}")
+            logger.error(f"Createl get_all_users failed: {e}")
             return []
 
     def get_user(self, session_token: str, user_id: int, entity_id: int = None) -> Optional[Dict[str, Any]]:
@@ -308,7 +308,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_user failed: {e}")
+            logger.error(f"Createl get_user failed: {e}")
             return None
 
     def create_user(self, session_token: str, user_data: Dict[str, Any], entity_id: int = None) -> Optional[int]:
@@ -321,7 +321,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json().get("id")
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI create_user failed: {e}")
+            logger.error(f"Createl create_user failed: {e}")
             return None
 
     def update_user(self, session_token: str, user_id: int, user_data: Dict[str, Any], entity_id: int = None) -> bool:
@@ -334,7 +334,7 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI update_user failed: {e}")
+            logger.error(f"Createl update_user failed: {e}")
             return False
 
     def delete_user(self, session_token: str, user_id: int, force_purge: bool = False, entity_id: int = None) -> bool:
@@ -347,7 +347,7 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI delete_user failed: {e}")
+            logger.error(f"Createl delete_user failed: {e}")
             return False
 
     # --- Profile API ---
@@ -361,7 +361,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_all_profiles failed: {e}")
+            logger.error(f"Createl get_all_profiles failed: {e}")
             return []
 
     def get_profile(self, session_token: str, profile_id: int, entity_id: int = None) -> Optional[Dict[str, Any]]:
@@ -373,7 +373,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_profile failed: {e}")
+            logger.error(f"Createl get_profile failed: {e}")
             return None
 
     def create_profile(self, session_token: str, profile_data: Dict[str, Any], entity_id: int = None) -> Optional[int]:
@@ -386,7 +386,7 @@ class GlpiService:
             response.raise_for_status()
             return response.json().get("id")
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI create_profile failed: {e}")
+            logger.error(f"Createl create_profile failed: {e}")
             return None
 
     def update_profile(self, session_token: str, profile_id: int, profile_data: Dict[str, Any], entity_id: int = None) -> bool:
@@ -399,7 +399,7 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI update_profile failed: {e}")
+            logger.error(f"Createl update_profile failed: {e}")
             return False
 
     def delete_profile(self, session_token: str, profile_id: int, force_purge: bool = False, entity_id: int = None) -> bool:
@@ -412,12 +412,12 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI delete_profile failed: {e}")
+            logger.error(f"Createl delete_profile failed: {e}")
             return False
 
     # --- Document API ---
     def upload_document(self, session_token: str, file_name: str, file_content_base64: str) -> Optional[int]:
-        """Uploads a document to GLPI using multipart/form-data and uploadManifest."""
+        """Uploads a document to Createl using multipart/form-data and uploadManifest."""
         url = f"{self.api_uri}/Document"
         headers = {
             "App-Token": self.app_token,
@@ -433,7 +433,7 @@ class GlpiService:
             logger.error(f"Base64 decode failed: {e}")
             return None
 
-        # Manifest tells GLPI about the file
+        # Manifest tells Createl about the file
         manifest = {
             "input": {
                 "name": file_name,
@@ -456,13 +456,13 @@ class GlpiService:
             
             # Response: {"id": 123, "message": ...}
             doc_id = response.json().get("id")
-            logger.info(f"GLPI: Uploaded Document ID {doc_id}")
+            logger.info(f"Createl: Uploaded Document ID {doc_id}")
             return doc_id
             
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI upload_document failed: {e}")
+            logger.error(f"Createl upload_document failed: {e}")
             if 'response' in locals() and response is not None:
-                 logger.error(f"GLPI Response: {response.text}")
+                 logger.error(f"Createl Response: {response.text}")
             return None
 
     def link_document_to_ticket(self, session_token: str, ticket_id: int, document_id: int, entity_id: int = None) -> bool:
@@ -481,7 +481,7 @@ class GlpiService:
             response.raise_for_status()
             return True
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI link_document_to_ticket failed: {e}")
+            logger.error(f"Createl link_document_to_ticket failed: {e}")
             return False
 
     def get_ticket_documents(self, session_token: str, ticket_id: int, entity_id: int = None) -> List[Dict[str, Any]]:
@@ -516,7 +516,7 @@ class GlpiService:
                                 "name": doc_data.get("name", "Unknown"),
                                 "filename": doc_data.get("filename", ""),
                                 "mime": doc_data.get("mime", ""),
-                                # Construct a download link if possible. GLPI standard link:
+                                # Construct a download link if possible. Createl standard link:
                                 # /front/document.send.php?docid=ID
                                 # But through API, maybe simpler?
                                 "link": doc_data.get("link", "") 
@@ -528,5 +528,5 @@ class GlpiService:
 
             return detailed_docs
         except requests.exceptions.RequestException as e:
-            logger.error(f"GLPI get_ticket_documents failed: {e}")
+            logger.error(f"Createl get_ticket_documents failed: {e}")
             return []

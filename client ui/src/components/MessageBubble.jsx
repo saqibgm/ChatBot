@@ -35,7 +35,7 @@ const extractYouTubeInfo = (url) => {
 };
 
 
-const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, botIcon = '🤖', botIconColor = null, userIcon = '👤', userIconColor = '#e5e7eb', buttonFontSize = '13' }) => {
+const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, botIcon = '🛒', botIconColor = null, userIcon = '👤', userIconColor = '#e5e7eb', buttonFontSize = '13' }) => {
     const isBot = message.sender === 'bot';
 
     // Compute theme colors - default to black if not provided
@@ -70,14 +70,15 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex w-full mb-4 ${isBot ? 'justify-start' : 'justify-end'}`}
+            transition={{ duration: 0.2 }}
+            className={`flex w-full mb-3 ${isBot ? 'justify-start' : 'justify-end'}`}
         >
             <div className={`flex ${message.ticket_form ? 'w-full max-w-full' : 'max-w-[90%]'} ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
-                {/* Avatar - Using emoji icons */}
+                {/* Avatar */}
                 <div
-                    className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-lg ${isBot ? 'mr-2' : 'ml-2'}`}
+                    className={`flex-shrink-0 h-9 w-9 rounded-xl flex items-center justify-center text-base shadow-sm ${isBot ? 'mr-2.5' : 'ml-2.5'}`}
                     style={isBot ? { backgroundColor: botBgColor } : { backgroundColor: userIconColor }}
                 >
                     {isBot ? botIcon : userIcon}
@@ -87,11 +88,14 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
                 <div className="flex flex-col">
                     {/* Bubble */}
                     <div
-                        className={`p-3 rounded-2xl shadow-sm text-sm ${isBot
-                            ? 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
-                            : 'text-white rounded-tr-none'
+                        className={`px-4 py-3 text-sm ${isBot
+                            ? 'bg-white text-gray-800 rounded-2xl rounded-tl-sm border border-gray-100'
+                            : 'text-white rounded-2xl rounded-tr-sm'
                             }`}
-                        style={!isBot ? { backgroundColor: primaryColor } : {}}
+                        style={!isBot
+                            ? { backgroundColor: primaryColor, boxShadow: `0 2px 8px ${primaryColor}30` }
+                            : { boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }
+                        }
                     >
                         {isBot ? (
                             <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-table:my-2">
@@ -101,8 +105,8 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
                                         remarkPlugins={[remarkGfm]}
                                         components={{
                                             table: ({ node, ...props }) => <table className="min-w-full divide-y divide-gray-200 my-2 border rounded-md overflow-hidden" {...props} />,
-                                            thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
-                                            th: ({ node, ...props }) => <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b" {...props} />,
+                                            // thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
+                                            // th: ({ node, ...props }) => <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b" {...props} />,
                                             td: ({ node, ...props }) => <td className="px-3 py-2 whitespace-normal text-sm text-gray-700 border-b border-r last:border-r-0 border-gray-100 bg-white" {...props} />,
                                             a: ({ node, ...props }) => <a style={{ color: primaryColor }} className="hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
                                             ul: ({ node, ...props }) => <ul className="list-disc pl-5" {...props} />,
@@ -169,15 +173,20 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
 
                                 {/* Render buttons if present */}
                                 {message.buttons && message.buttons.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mt-3 not-prose">
+                                    <div className="grid grid-cols-2 gap-1 mt-3 not-prose">
                                         {message.buttons.map((button, index) => (
                                             <button
                                                 key={index}
                                                 onClick={() => onButtonClick && onButtonClick(button.payload)}
-                                                className="px-3 py-2 text-white rounded-lg transition-colors shadow-sm"
-                                                style={{ backgroundColor: primaryColor, fontSize: `${buttonFontSize}px` }}
-                                                onMouseEnter={(e) => e.target.style.backgroundColor = hoverColor}
-                                                onMouseLeave={(e) => e.target.style.backgroundColor = primaryColor}
+                                                className="px-1.5 py-1 rounded-lg transition-all font-medium whitespace-nowrap truncate text-xs"
+                                                style={{
+                                                    fontSize: `${parseInt(buttonFontSize) - 1}px`,
+                                                    color: primaryColor,
+                                                    backgroundColor: `${primaryColor}0D`,
+                                                    border: `1.5px solid ${primaryColor}30`
+                                                }}
+                                                onMouseEnter={(e) => { e.target.style.backgroundColor = primaryColor; e.target.style.color = '#ffffff'; e.target.style.borderColor = primaryColor; }}
+                                                onMouseLeave={(e) => { e.target.style.backgroundColor = `${primaryColor}0D`; e.target.style.color = primaryColor; e.target.style.borderColor = `${primaryColor}30`; }}
                                             >
                                                 {button.title}
                                             </button>

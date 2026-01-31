@@ -26,10 +26,10 @@ rules:
       - action: utter_please_rephrase
 
   # --- FORM RULES (Ticket Creation) ---
-  - rule: Init GLPI session before activating the form
+  - rule: Init Createl session before activating the form
     steps:
       - intent: create_ticket
-      - action: action_init_glpi_session
+      - action: action_init_createl_session
       - action: ticket_form
       - active_loop: ticket_form
 
@@ -42,7 +42,7 @@ rules:
       - slot_was_set:
         - requested_slot: null
       - action: utter_submit
-      - action: action_create_glpi_ticket
+      - action: action_create_createl_ticket
 
   - rule: Interrupt form with stop intent
     condition:
@@ -58,23 +58,23 @@ rules:
   # --- STATUS CHECK RULES (Mutually Exclusive) ---
   # Rules disabled to favour Stories and avoid conflicts
   # RULE 1: Init session, then run status check if ID is present immediately
-  - rule: Init GLPI session and Check Status when ID is present
+  - rule: Init Createl session and Check Status when ID is present
     steps:
       - intent: check_status
       - slot_was_set:
           - ticket_id: true
-      - action: action_init_glpi_session
-      - action: action_check_glpi_status
+      - action: action_init_createl_session
+      - action: action_check_createl_status
       - action: utter_ask_anything_else
 
   # RULE 2: Init session, then ask for ID if status is requested but ID is MISSING
-  - rule: Init GLPI session and Ask for Ticket ID when checking status
+  - rule: Init Createl session and Ask for Ticket ID when checking status
     condition:
       - slot_was_set:
           - ticket_id: null # Condition: Ticket ID slot is empty
     steps:
       - intent: check_status
-      - action: action_init_glpi_session
+      - action: action_init_createl_session
       - action: utter_ask_ticket_id
       - action: action_listen
 
@@ -86,18 +86,18 @@ rules:
     steps:
       - action: utter_ask_ticket_id # Was previously executed
       - intent: inform
-      - action: action_check_glpi_status
+      - action: action_check_createl_status
       - action: utter_ask_anything_else
 
   - rule: Handle File Upload
     steps:
       - intent: upload_file
-      - action: action_init_glpi_session
+      - action: action_init_createl_session
       - action: action_upload_file
       - action: action_upload_file
       - action: utter_ask_anything_else
 
-  #     - action: action_init_glpi_session
+  #     - action: action_init_createl_session
   #     - action: action_list_open_tickets
   #     - action: utter_ask_anything_else
 
@@ -105,7 +105,7 @@ rules:
   # - rule: List Attachments
   #   steps:
   #     - intent: list_attachments
-  #     - action: action_init_glpi_session
+  #     - action: action_init_createl_session
   #     - action: action_list_attachments
   #     - action: utter_ask_anything_else
 
@@ -116,6 +116,42 @@ rules:
       - action: action_clear_session
       - action: utter_cleared
 
+  # --- ADMIN RULES ---
+  - rule: Admin find product
+    steps:
+      - intent: admin_find_product
+      - action: action_admin_find_product
+
+  - rule: Admin find customer
+    steps:
+      - intent: admin_find_customer
+      - action: action_admin_find_customer
+
+  - rule: Admin get customer
+    steps:
+      - intent: admin_get_customer
+      - action: action_admin_get_customer
+
+  - rule: Admin get customer details
+    steps:
+      - intent: admin_get_customer_details
+      - action: action_admin_get_customer_details
+
+  - rule: Admin customer last orders
+    steps:
+      - intent: admin_customer_last_orders
+      - action: action_admin_customer_last_orders
+
+  - rule: Admin token profile
+    steps:
+      - intent: admin_token_me
+      - action: action_admin_token_me
+
+  - rule: Admin current user
+    steps:
+      - intent: admin_me
+      - action: action_admin_me
+
   # RULE: Check Status (When ID is provided) - REMOVED TO AVOID CONFLICT WITH ERROR HANDLING STORIES
   # - rule: Check Status with ID
   #   condition:
@@ -123,6 +159,6 @@ rules:
   #       - ticket_id: true
   #   steps:
   #     - intent: check_status
-  #     - action: action_init_glpi_session
-  #     - action: action_check_glpi_status
+  #     - action: action_init_createl_session
+  #     - action: action_check_createl_status
   #     - action: utter_ask_anything_else

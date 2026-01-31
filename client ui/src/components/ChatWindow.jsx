@@ -1,42 +1,47 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Minimize2, X, Trash2, XCircle, Package, ShoppingCart, Users, ListOrdered, Send, FileText } from 'lucide-react';
+import { Minimize2, X, Trash2, XCircle, Package, ShoppingCart, Users, ListOrdered, Send, FileText, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MessageBubble from './MessageBubble';
 import AnimatedChatIcon from './AnimatedChatIcon';
 import { v4 as uuidv4 } from 'uuid';
+import logoImg from '../assets/logo.png';
 
 const RASA_API_URL = 'http://127.0.0.1:5105/webhooks/rest/webhook';
 
 // localStorage keys with appId prefix for multi-widget support
-const getStorageKey = (appId, key) => `glpi-chat-${appId}-${key}`;
+const getStorageKey = (appId, key) => `createl - chat - ${appId} -${key} `;
 
 const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) => {
+    // Theme override state (for "set theme {id}" chat command)
+    const [themeOverride, setThemeOverride] = useState(null);
+    const activeTheme = themeOverride || theme;
+
     // Extract theme properties with defaults
-    const primaryColor = theme?.primaryColor || '#000000';
-    const secondaryColor = theme?.secondaryColor || adjustBrightness(primaryColor, 20);
-    const bgColor = theme?.bgColor || '#ffffff';
-    const textColor = theme?.textColor || '#1f2937';
-    const fontFamily = theme?.fontFamily || 'Inter';
-    const borderRadius = theme?.borderRadius || '12';
+    const primaryColor = activeTheme?.primaryColor || '#000000';
+    const secondaryColor = activeTheme?.secondaryColor || adjustBrightness(primaryColor, 20);
+    const bgColor = activeTheme?.bgColor || '#ffffff';
+    const textColor = activeTheme?.textColor || '#1f2937';
+    const fontFamily = activeTheme?.fontFamily || 'Inter';
+    const borderRadius = activeTheme?.borderRadius || '12';
 
     // Icon settings
-    const botIcon = theme?.botIcon || '🤖';
-    const botIconColor = theme?.botIconColor || primaryColor;
-    const userIcon = theme?.userIcon || '👤';
-    const userIconColor = theme?.userIconColor || '#e5e7eb';
-    const sendIcon = theme?.sendIcon || '➤';
-    const sendIconColor = theme?.sendIconColor || primaryColor;
-    const attachIcon = theme?.attachIcon || '📎';
+    const botIcon = activeTheme?.botIcon || '🛒';
+    const botIconColor = activeTheme?.botIconColor || primaryColor;
+    const userIcon = activeTheme?.userIcon || '👤';
+    const userIconColor = activeTheme?.userIconColor || '#e5e7eb';
+    const sendIcon = activeTheme?.sendIcon || '➤';
+    const sendIconColor = activeTheme?.sendIconColor || primaryColor;
+    const attachIcon = activeTheme?.attachIcon || '📎';
 
     // Font size settings
-    const headerFontSize = theme?.headerFontSize || '16';
-    const messageFontSize = theme?.messageFontSize || '14';
-    const buttonFontSize = theme?.buttonFontSize || '13';
-    const inputFontSize = theme?.inputFontSize || '14';
+    const headerFontSize = activeTheme?.headerFontSize || '16';
+    const messageFontSize = activeTheme?.messageFontSize || '14';
+    const buttonFontSize = activeTheme?.buttonFontSize || '13';
+    const inputFontSize = activeTheme?.inputFontSize || '14';
 
     // Compute derived colors
     const hoverColor = adjustBrightness(primaryColor, 20);
-    const shadowColor = `${primaryColor}4D`; // 30% opacity
+    const shadowColor = `${primaryColor} 4D`; // 30% opacity
 
     // Helper function to adjust color brightness
     function adjustBrightness(hex, percent) {
@@ -75,13 +80,10 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                 console.warn('Failed to parse saved messages:', e);
             }
         }
-        return [{ id: 'init', sender: 'bot', text: `Hello! Welcome to ${title}. How can I help you?` }];
+        return [{ id: 'init', sender: 'bot', text: `Welcome to ${title}. How can I help you ? ` }];
     });
 
-    const [showPrivacyPopup, setShowPrivacyPopup] = useState(() => {
-        const dismissed = localStorage.getItem(getStorageKey(appId, 'privacyDismissed')) === 'true';
-        return isAuthenticated && !dismissed;
-    });
+    const [showPrivacyPopup, setShowPrivacyPopup] = useState(false);
 
     // Debug log
     useEffect(() => {
@@ -125,11 +127,11 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
 
     // Fetch admin profile on first open
     const [adminFetched, setAdminFetched] = useState(false);
-    
+
     useEffect(() => {
         const fetchAdminProfile = async () => {
             if (adminFetched || !isOpen) return;
-            
+
             try {
                 const response = await fetch(RASA_API_URL, {
                     method: 'POST',
@@ -142,7 +144,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                 });
 
                 const data = await response.json();
-                
+
                 // Look for admin_me response with display_name
                 for (const msg of data) {
                     if (msg.custom?.admin_me && msg.custom?.display_name) {
@@ -151,7 +153,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                         // Update welcome message with username
                         setMessages(prev => {
                             if (prev.length === 1 && prev[0].id === 'init') {
-                                return [{ id: 'init', sender: 'bot', text: `Hello! ${userName}, Welcome to ${title}. How can I help you?` }];
+                                return [{ id: 'init', sender: 'bot', text: `${userName}, Welcome to ${title}. How can I help you ? ` }];
                             }
                             return prev;
                         });
@@ -164,7 +166,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                 setAdminFetched(true);
             }
         };
-        
+
         fetchAdminProfile();
     }, [isOpen, adminFetched, senderId, appId, title]);
 
@@ -174,9 +176,9 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         localStorage.removeItem(getStorageKey(appId, 'senderId'));
         const newId = uuidv4();
         localStorage.setItem(getStorageKey(appId, 'senderId'), newId);
-        const welcomeText = authUser 
-            ? `Hello! ${authUser}, Welcome to ${title}. How can I help you?`
-            : `Hello! Welcome to ${title}. How can I help you?`;
+        const welcomeText = authUser
+            ? `${authUser}, Welcome to ${title}. How can I help you ? `
+            : `Welcome to ${title}. How can I help you ? `;
         setMessages([{ id: 'init', sender: 'bot', text: welcomeText }]);
     };
 
@@ -236,7 +238,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
 
     const handleTicketFilterSubmit = (statusId) => {
         setShowTicketFilterPopup(false);
-        const payload = `/list_tickets{"status_id": ${statusId}}`; // Just numbers, no quotes for int
+        const payload = `/ list_tickets{ "status_id": ${statusId} } `; // Just numbers, no quotes for int
         handleButtonClick(payload); // Recursive call but now it acts as manual send
     };
 
@@ -269,7 +271,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         }
 
         // === BUTTONS THAT NEED POPUPS ===
-        
+
         // Track Order - needs order ID (show popup even if has data, to confirm)
         if (payload === '/track_order' || payload.startsWith('/track_order{')) {
             const data = extractPayloadData(payload, '/track_order');
@@ -282,7 +284,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
 
         // Search Products - needs product name/ID
         if (payload === '/search_products' || payload.startsWith('/search_products{')) {
-            openSearchPopup('product');
+            openSearchPopup('search_product');
             return;
         }
 
@@ -348,7 +350,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         // /admin_token_me - shows admin profile
 
         // Extract intent from payload (e.g., "/list_tickets" -> "list_tickets")
-        const message = payload.startsWith('/') ? payload : `/${payload}`;
+        const message = payload.startsWith('/') ? payload : `/ ${payload} `;
 
         // Match ticket submission to show formatted summary
         let displayText = payload;
@@ -356,7 +358,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             try {
                 const jsonStr = payload.replace('/submit_ticket_form', '');
                 const data = JSON.parse(jsonStr);
-                displayText = `📝 Ticket Request:\n${data.title} (${data.category})\nPriority: ${data.priority}`;
+                displayText = `📝 Ticket Request: \n${data.title} (${data.category}) \nPriority: ${data.priority} `;
             } catch (e) {
                 displayText = '📝 Submitting Ticket...';
             }
@@ -472,8 +474,40 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             setMessages(prev => [...prev, {
                 id: uuidv4(),
                 sender: 'bot',
-                text: `⚠️ ${validation.error}`
+                text: `⚠️ ${validation.error} `
             }]);
+            return;
+        }
+
+        // Handle "set theme {id}" command
+        const themeMatch = text.match(/^set\s+theme\s+(\d+)$/i);
+        if (themeMatch) {
+            const themeId = themeMatch[1];
+            setMessages(prev => [...prev, { id: uuidv4(), sender: senderId, text }]);
+            setIsLoading(true);
+            try {
+                const res = await fetch(`http://localhost:8181/admin/themes/${themeId}`);
+                const data = await res.json();
+                if (data.success && data.theme) {
+                    const settings = data.theme.settings;
+                    setThemeOverride(settings);
+                    setMessages(prev => [...prev, {
+                        id: uuidv4(), sender: 'bot',
+                        text: `Theme changed to **${data.theme.name}** (ID: ${themeId})`
+                    }]);
+                } else {
+                    setMessages(prev => [...prev, {
+                        id: uuidv4(), sender: 'bot',
+                        text: `Theme with ID ${themeId} not found.`
+                    }]);
+                }
+            } catch (e) {
+                setMessages(prev => [...prev, {
+                    id: uuidv4(), sender: 'bot',
+                    text: `Failed to load theme ${themeId}.`
+                }]);
+            }
+            setIsLoading(false);
             return;
         }
 
@@ -594,6 +628,14 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             buildMessage: (q) => `/product_details{"product_id":"${q}"}`
         },
         {
+            key: 'search_product',
+            label: 'Search Product',
+            icon: Search,
+            placeholder: 'Enter product name',
+            buildMessage: (q) => `/search_products{"search_query":"${q}"}`,
+            hidden: true
+        },
+        {
             key: 'order',
             label: 'Order',
             icon: ShoppingCart,
@@ -616,7 +658,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         },
         {
             key: 'stock_check',
-            label: 'Check Stock',
+            label: 'Stock',
             icon: Package,
             placeholder: 'Enter product ID to check stock',
             buildMessage: (q) => `/check_stock{"product_id":"${q}"}`
@@ -672,11 +714,11 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         if (!query) return;
 
         const message = action.buildMessage ? action.buildMessage(query) : query;
-        
+
         // Close popup immediately
         setSearchContext({ open: false, type: null });
         setSearchQuery('');
-        
+
         // Then send the message
         await sendTextMessage(message);
     };
@@ -705,7 +747,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         if (!ticketIdInput.trim()) return;
 
         setShowTicketIdPopup(false);
-        // Clean ID - remove "GLPI-" prefix if user typed it, though backend might handle it
+        // Clean ID - remove "Createl-" prefix if user typed it, though backend might handle it
         // sending standard entity payload
         const payload = `/check_status{"ticket_id":"${ticketIdInput.trim()}"}`;
         handleButtonClick(payload);
@@ -713,48 +755,63 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end" style={{ fontFamily }}>
+        <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end" style={{ fontFamily }}>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="w-[400px] h-[600px] backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col overflow-hidden mb-4 relative"
+                        className="w-[432px] h-[648px] border border-gray-200 flex flex-col overflow-hidden mb-4 relative"
                         style={{
                             backgroundColor: bgColor,
                             borderRadius: `${borderRadius}px`,
-                            color: textColor
+                            color: textColor,
+                            boxShadow: `0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)`
                         }}
                     >
                         {/* Header */}
                         <div
-                            className="p-4 flex items-center justify-between text-white shadow-md"
+                            className="px-4 py-3 flex items-center justify-between text-white"
                             style={{
-                                background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
-                                fontSize: `${headerFontSize}px`
+                                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                                fontSize: `${headerFontSize}px`,
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                             }}
                         >
-                            <div className="flex items-center space-x-2">
-                                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                <h1 className="font-semibold" style={{ fontSize: `${parseInt(headerFontSize) + 2}px` }}>{title}</h1>
-                                {authUser && (
-                                    <span className="text-xs opacity-75">({authUser})</span>
-                                )}
+                            <div className="flex items-center space-x-3">
+                                <img src={logoImg} alt="Logo" className="h-[21px] w-auto object-contain rounded-sm bg-white" style={{ transform: 'scaleY(1.2)' }} />
+                                <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="50" cy="50" r="46" fill="white" opacity="0.2" />
+                                    <line x1="50" y1="12" x2="50" y2="22" stroke="white" strokeWidth="4" strokeLinecap="round" />
+                                    <circle cx="50" cy="10" r="5" fill="white" />
+                                    <rect x="22" y="30" rx="20" ry="20" width="56" height="40" fill="white" />
+                                    <circle cx="38" cy="48" r="6" fill={primaryColor} />
+                                    <circle cx="62" cy="48" r="6" fill={primaryColor} />
+                                    <rect x="36" y="62" rx="3" ry="3" width="28" height="6" fill={primaryColor} opacity="0.3" />
+                                    <rect x="30" y="70" rx="4" ry="4" width="14" height="12" fill="white" />
+                                    <rect x="56" y="70" rx="4" ry="4" width="14" height="12" fill="white" />
+                                </svg>
                             </div>
-                            <div className="flex space-x-1">
-                                {/* Clear History */}
-                                <button
-                                    onClick={handleClearHistory}
-                                    className="p-1.5 hover:bg-white/10 rounded transition-colors"
-                                    title="Clear chat history"
-                                >
-                                    <Trash2 size={15} />
-                                </button>
-                                {/* Minimize */}
-                                <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-white/10 rounded transition-colors" title="Minimize">
-                                    <Minimize2 size={15} />
-                                </button>
+                            <div className="flex flex-col items-end">
+                                <div className="flex space-x-1">
+                                    <button
+                                        onClick={handleClearHistory}
+                                        className="p-2 hover:bg-white/15 rounded-lg transition-colors"
+                                        title="Clear chat history"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                    <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/15 rounded-lg transition-colors" title="Minimize">
+                                        <Minimize2 size={16} />
+                                    </button>
+                                </div>
+                                <div className="flex items-center space-x-1.5 mt-1 mr-1">
+                                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <span className="text-[11px] opacity-80 font-medium">
+                                        {authUser ? authUser : 'Online'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -870,7 +927,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                         </AnimatePresence>
 
                         {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50" style={{ fontSize: `${messageFontSize}px` }}>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ fontSize: `${messageFontSize}px`, backgroundColor: '#f8f9fb' }}>
                             {messages.map(msg => (
                                 <MessageBubble
                                     key={msg.id}
@@ -878,7 +935,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                     onButtonClick={handleButtonClick}
                                     onFeedback={handleFeedback}
                                     themeColor={primaryColor}
-                                    botIcon={botIcon}
+                                    botIcon={<svg width="22" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="10" r="5" fill="white" /><line x1="50" y1="14" x2="50" y2="24" stroke="white" strokeWidth="4" strokeLinecap="round" /><rect x="22" y="30" rx="20" ry="20" width="56" height="40" fill="white" /><circle cx="38" cy="48" r="6" fill={primaryColor} /><circle cx="62" cy="48" r="6" fill={primaryColor} /><rect x="36" y="62" rx="3" ry="3" width="28" height="5" fill={primaryColor} opacity="0.3" /></svg>}
                                     botIconColor={botIconColor}
                                     userIcon={userIcon}
                                     userIconColor={userIconColor}
@@ -886,18 +943,18 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                 />
                             ))}
                             {isLoading && (
-                                <div className="flex items-center space-x-2 text-gray-400 text-sm ml-2">
-                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                <div className="flex items-center space-x-1.5 ml-10 mt-1">
+                                    <div className="w-2.5 h-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: '0s' }}></div>
+                                    <div className="w-2.5 h-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: '0.15s' }}></div>
+                                    <div className="w-2.5 h-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: '0.3s' }}></div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Action Buttons - Single Row */}
-                        <div className="px-2 py-2 bg-white border-t border-gray-100">
-                            <div className="flex justify-between gap-1">
+                        {/* Action Buttons */}
+                        <div className="px-3 py-2.5 bg-white border-t border-gray-100">
+                            <div className="flex justify-between gap-2">
                                 {searchActions.filter(a => !a.hidden).map((action) => {
                                     const Icon = action.icon;
                                     return (
@@ -915,10 +972,13 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                                 }
                                                 openSearchPopup(action.key);
                                             }}
-                                            className="flex-1 flex flex-col items-center justify-center gap-0.5 rounded-md border border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white transition-all py-1.5 px-1"
+                                            className="flex-1 flex flex-col items-center justify-center gap-1 rounded-xl py-1 px-1 transition-all hover:scale-105"
+                                            style={{ backgroundColor: `${primaryColor}0D`, border: `1px solid ${primaryColor}20` }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = `${primaryColor}1A`; e.currentTarget.style.borderColor = `${primaryColor}40`; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = `${primaryColor}0D`; e.currentTarget.style.borderColor = `${primaryColor}20`; }}
                                         >
-                                            <Icon size={16} style={{ color: primaryColor }} />
-                                            <span className="text-[10px] text-gray-600 leading-tight">{action.label}</span>
+                                            <Icon size={18} style={{ color: primaryColor }} />
+                                            <span className="text-[10px] font-semibold leading-tight" style={{ color: primaryColor, opacity: 0.8 }}>{action.label}</span>
                                         </button>
                                     );
                                 })}
@@ -926,8 +986,8 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                         </div>
 
                         {/* Text Input Area */}
-                        <div className="px-3 py-2 bg-white border-t border-gray-100">
-                            <form 
+                        <div className="px-4 py-3 bg-white border-t border-gray-200">
+                            <form
                                 onSubmit={(e) => {
                                     e.preventDefault();
                                     const input = e.target.elements.messageInput;
@@ -936,21 +996,23 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                         input.value = '';
                                     }
                                 }}
-                                className="flex gap-2"
+                                className="flex gap-3 items-center"
                             >
                                 <input
                                     type="text"
                                     name="messageInput"
-                                    placeholder="Type a message..."
-                                    className="flex-1 bg-gray-100 text-gray-800 rounded-full px-4 py-2 focus:outline-none focus:ring-2 transition-all text-sm"
-                                    style={{ '--tw-ring-color': `${primaryColor}40`, fontSize: `${inputFontSize}px` }}
+                                    placeholder="Type your message..."
+                                    className="flex-1 text-gray-800 rounded-full px-5 py-3 focus:outline-none transition-all text-sm border"
+                                    style={{ borderColor: `${primaryColor}30`, fontSize: `${inputFontSize}px`, backgroundColor: '#f8f9fb' }}
+                                    onFocus={(e) => { e.target.style.borderColor = primaryColor; e.target.style.backgroundColor = '#ffffff'; e.target.style.boxShadow = `0 0 0 3px ${primaryColor}15`; }}
+                                    onBlur={(e) => { e.target.style.borderColor = `${primaryColor}30`; e.target.style.backgroundColor = '#f8f9fb'; e.target.style.boxShadow = 'none'; }}
                                     disabled={isLoading}
                                 />
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="p-2 rounded-full text-white transition-all disabled:opacity-50"
-                                    style={{ backgroundColor: primaryColor }}
+                                    className="p-3 rounded-full text-white transition-all disabled:opacity-50 hover:opacity-90"
+                                    style={{ backgroundColor: primaryColor, boxShadow: `0 4px 12px ${primaryColor}40` }}
                                 >
                                     <Send size={18} />
                                 </button>

@@ -1,5 +1,6 @@
 """
 Script to create 8 default themes for the Admin Dashboard
+Professional e-commerce focused themes
 """
 import sys
 import os
@@ -10,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from actions.conversation_db import create_theme, get_themes
 
-# Define 8 distinct themes
+# Define 8 distinct professional e-commerce themes
 DEFAULT_THEMES = [
     {
         "name": "Ocean Blue",
@@ -20,7 +21,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "🛒",
+            "botIconColor": "#0077B6",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#0077B6"
         },
         "is_default": True
     },
@@ -32,7 +39,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "🏪",
+            "botIconColor": "#2D6A4F",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#2D6A4F"
         },
         "is_default": False
     },
@@ -44,7 +57,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "📦",
+            "botIconColor": "#E85D04",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#E85D04"
         },
         "is_default": False
     },
@@ -56,7 +75,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "🎧",
+            "botIconColor": "#7B2CBF",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#7B2CBF"
         },
         "is_default": False
     },
@@ -68,7 +93,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "8"
+            "borderRadius": "8",
+            "botIcon": "💼",
+            "botIconColor": "#1E3A8A",
+            "userIcon": "👨‍💼",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#1E3A8A"
         },
         "is_default": False
     },
@@ -80,7 +111,13 @@ DEFAULT_THEMES = [
             "bgColor": "#1f2937",
             "textColor": "#f9fafb",
             "fontFamily": "Inter",
-            "borderRadius": "16"
+            "borderRadius": "16",
+            "botIcon": "🛍️",
+            "botIconColor": "#6366F1",
+            "userIcon": "👤",
+            "userIconColor": "#374151",
+            "sendIcon": "➤",
+            "sendIconColor": "#6366F1"
         },
         "is_default": False
     },
@@ -92,7 +129,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "🛒",
+            "botIconColor": "#DB2777",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#DB2777"
         },
         "is_default": False
     },
@@ -104,7 +147,13 @@ DEFAULT_THEMES = [
             "bgColor": "#ffffff",
             "textColor": "#1f2937",
             "fontFamily": "Inter",
-            "borderRadius": "12"
+            "borderRadius": "12",
+            "botIcon": "🌐",
+            "botIconColor": "#0D9488",
+            "userIcon": "👤",
+            "userIconColor": "#e5e7eb",
+            "sendIcon": "➤",
+            "sendIconColor": "#0D9488"
         },
         "is_default": False
     }
@@ -114,9 +163,9 @@ def main():
     # Check existing themes
     existing = get_themes()
     existing_names = [t['name'] for t in existing]
-    
+
     print(f"Found {len(existing)} existing themes: {existing_names}")
-    
+
     created = 0
     for theme in DEFAULT_THEMES:
         if theme['name'] not in existing_names:
@@ -129,9 +178,9 @@ def main():
             created += 1
         else:
             print(f"Theme '{theme['name']}' already exists, skipping")
-    
+
     print(f"\nDone! Created {created} new themes.")
-    
+
     # Show all themes
     all_themes = get_themes()
     print(f"\nAll themes ({len(all_themes)}):")

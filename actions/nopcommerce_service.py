@@ -205,7 +205,7 @@ class NopCommerceService:
                         "id": customer.get("id") or customer.get("Id"),
                         "name": customer.get("first_name") or customer.get("FirstName") or customer.get("email"),
                         "email": customer.get("email") or customer.get("Email"),
-                        "full_name": f"{customer.get('first_name', '')} {customer.get('last_name', '')}".strip()
+                        "full_name": f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
                     }
             except:
                 continue
@@ -324,7 +324,8 @@ class NopCommerceService:
                         "email": data.get("email") or data.get("Email") or username,
                         "firstName": data.get("firstName") or data.get("FirstName") or data.get("first_name"),
                         "lastName": data.get("lastName") or data.get("LastName") or data.get("last_name"),
-                        "name": data.get("name") or data.get("Name") or data.get("displayName") or data.get("DisplayName"),
+                        "name": f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
+                        # data.get("name") or data.get("Name") or data.get("displayName") or data.get("DisplayName"),
                     }
                     expires_in = data.get("expires_in") or data.get("expiresIn")
                     if expires_in:
@@ -404,6 +405,10 @@ class NopCommerceService:
             "gtin": product.get("gtin") or product.get("Gtin") or "",
             "manufacturer_part_number": product.get("manufacturer_part_number") or product.get("ManufacturerPartNumber") or "",
             "price": product.get("price") or product.get("Price") or 0,
+            "min_price": product.get("min_price") or product.get("MinPrice"),
+            "price_a": product.get("price_a") or product.get("TierPriceA"),
+            "price_b": product.get("price_b") or product.get("TierPriceB"),
+            "price_c": product.get("price_c") or product.get("TierPriceC"),
             "old_price": product.get("old_price") or product.get("OldPrice"),
             "special_price": product.get("special_price") or product.get("SpecialPrice"),
             "discount_amount": product.get("discount_amount") or product.get("DiscountAmount"),
@@ -473,7 +478,7 @@ class NopCommerceService:
             "username": customer.get("username") or customer.get("Username") or customer.get("email"),
             "first_name": customer.get("first_name") or customer.get("FirstName"),
             "last_name": customer.get("last_name") or customer.get("LastName"),
-            "full_name": customer.get("full_name") or customer.get("FullName") or f"{customer.get('first_name', '')} {customer.get('last_name', '')}".strip(),
+            "full_name": customer.get("full_name") or customer.get("FullName") or f"{customer.get('first_name', '')} {customer.get('last_name', '')}".strip() or f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip(),
             "gender": customer.get("gender") or customer.get("Gender"),
             "date_of_birth": customer.get("date_of_birth") or customer.get("DateOfBirth"),
             "company": customer.get("company") or customer.get("Company") or "",

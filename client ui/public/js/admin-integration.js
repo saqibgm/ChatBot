@@ -10,9 +10,9 @@ function generateEmbedCode() {
     if (themeId) attrs += ` theme-id="${themeId}"`;
     else if (themeColor !== '#000000') attrs += ` theme-color="${themeColor}"`;
 
-    const code = `&lt;!-- GLPI Chat Widget --&gt;
-&lt;glpi-chat-widget ${attrs}&gt;&lt;/glpi-chat-widget&gt;
-&lt;script src="http://localhost:8181/glpi-chat-widget.js"&gt;&lt;\/script&gt;`;
+    const code = `&lt;!-- Createl Chat Widget --&gt;
+&lt;createl-chat-widget ${attrs}&gt;&lt;/createl-chat-widget&gt;
+&lt;script src="http://localhost:8181/createl-chat-widget.js"&gt;&lt;\/script&gt;`;
 
     document.getElementById('embed-code').textContent = code;
 }

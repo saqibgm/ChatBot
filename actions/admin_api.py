@@ -68,9 +68,9 @@ def serve_inspector():
 def serve_analytics():
     return send_from_directory(STATIC_DIR, 'analytics.html')
 
-@app.route('/glpi-chat-widget.js')
+@app.route('/createl-chat-widget.js')
 def serve_widget_js():
-    return send_from_directory(STATIC_DIR, 'glpi-chat-widget.js')
+    return send_from_directory(STATIC_DIR, 'createl-chat-widget.js')
 
 # Default configuration keys
 DEFAULT_CONFIG_KEYS = [

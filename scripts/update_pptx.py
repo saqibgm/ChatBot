@@ -1,6 +1,6 @@
 """
-Script to update GLPI_Chatbot_PPT.pptx:
-1. Rename "GLPI IT Support Chatbot" to "Project IQ - Service and Support"
+Script to update Createl_Chatbot_PPT.pptx:
+1. Rename "Createl IT Support Chatbot" to "Createl - Service and Support"
 2. Copy slides from AI_Coding_Complete.pptx
 """
 
@@ -10,22 +10,22 @@ from copy import deepcopy
 import os
 
 # File paths
-glpi_ppt_path = r"d:\99T\Rasa\my-glpi-bot\GLPI_Chatbot_PPT.pptx"
-ai_ppt_path = r"d:\99T\Rasa\my-glpi-bot\AI_Coding_Complete.pptx"
-output_path = r"d:\99T\Rasa\my-glpi-bot\GLPI_Chatbot_PPT_Updated.pptx"
+createl_ppt_path = r"d:\99T\Rasa\my-createl-bot\Createl_Chatbot_PPT.pptx"
+ai_ppt_path = r"d:\99T\Rasa\my-createl-bot\AI_Coding_Complete.pptx"
+output_path = r"d:\99T\Rasa\my-createl-bot\Createl_Chatbot_PPT_Updated.pptx"
 
 # Load presentations
 print("Loading presentations...")
-glpi_prs = Presentation(glpi_ppt_path)
+createl_prs = Presentation(createl_ppt_path)
 ai_prs = Presentation(ai_ppt_path)
 
 # Step 1: Find and replace title text
-print("Renaming title from 'GLPI IT Support Chatbot' to 'Project IQ - Service and Support'...")
-old_title = "GLPI IT Support Chatbot"
-new_title = "Project IQ - Service and Support"
+print("Renaming title from 'Createl IT Support Chatbot' to 'Createl - Service and Support'...")
+old_title = "Createl IT Support Chatbot"
+new_title = "Createl - Service and Support"
 
 replacements_made = 0
-for slide in glpi_prs.slides:
+for slide in createl_prs.slides:
     for shape in slide.shapes:
         if shape.has_text_frame:
             for paragraph in shape.text_frame.paragraphs:
@@ -64,8 +64,8 @@ print("The following slides from AI_Coding_Complete.pptx should be copied:")
 for idx, title, slide in found_slides:
     print(f"  Slide {idx + 1}: {title}")
 
-# Save the updated GLPI presentation (with title change)
+# Save the updated Createl presentation (with title change)
 print(f"\nSaving updated presentation to: {output_path}")
-glpi_prs.save(output_path)
+createl_prs.save(output_path)
 print("Done! Title has been updated.")
 print(f"\nTo complete the slide copy, please manually copy slides {[x[0]+1 for x in found_slides]} from AI_Coding_Complete.pptx")

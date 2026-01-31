@@ -236,7 +236,7 @@ How can I assist you today?"
 
   # Legacy IT Support responses (keeping for backward compatibility)
   utter_ask_ticket_id:
-    - text: "Please provide the **ID of the ticket** you want to check (e.g., GLPI-1234 or just 1234)."
+    - text: "Please provide the **ID of the ticket** you want to check (e.g., Createl-1234 or just 1234)."
 
   utter_ticket_status_info:
     - text: "The status for ticket **{ticket_id}** is **{ticket_status}**."

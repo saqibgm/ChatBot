@@ -10,27 +10,27 @@ stories:
   steps:
     - intent: greet
     - action: utter_greet
-    - user: "What's the status of ticket [GLPI-123]?"
+    - user: "What's the status of ticket [Createl-123]?"
       intent: check_status
       entities:
-        - ticket_id: "GLPI-123"
+        - ticket_id: "Createl-123"
     - slot_was_set:
-      - ticket_id: "GLPI-123"
-    - action: action_init_glpi_session
-    - action: action_check_glpi_status
+      - ticket_id: "Createl-123"
+    - action: action_init_createl_session
+    - action: action_check_createl_status
     - action: utter_ask_anything_else
 
 # - story: Check status with existing slot context
 #   steps:
 #     - intent: list_tickets # Precondition example
-#     - action: action_init_glpi_session
+#     - action: action_init_createl_session
 #     - action: action_list_open_tickets
 #     - user: "Check status"
 #       intent: check_status
 #     - slot_was_set:
-#       - ticket_id: "GLPI-123" # Assumed set from list or history
-#     - action: action_init_glpi_session
-#     - action: action_check_glpi_status
+#       - ticket_id: "Createl-123" # Assumed set from list or history
+#     - action: action_init_createl_session
+#     - action: action_check_createl_status
 #     - action: utter_ask_anything_else
 
 # - story: Check status with ID in follow-up
@@ -39,15 +39,15 @@ stories:
 #     - action: utter_greet
 #     - user: "I want to check a ticket status"
 #       intent: check_status
-#     - action: action_init_glpi_session
+#     - action: action_init_createl_session
 #     - action: utter_ask_ticket_id
-#     - user: "It's [GLPI-456]"
+#     - user: "It's [Createl-456]"
 #       intent: inform
 #       entities:
-#         - ticket_id: "GLPI-456"
+#         - ticket_id: "Createl-456"
 #     - slot_was_set:
-#       - ticket_id: "GLPI-456"
-#     - action: action_check_glpi_status
+#       - ticket_id: "Createl-456"
+#     - action: action_check_createl_status
 #     - action: utter_ask_anything_else
 
 # - story: Check status with invalid ID
@@ -60,8 +60,8 @@ stories:
 #         - ticket_id: "INVALID-123"
 #     - slot_was_set:
 #       - ticket_id: "INVALID-123"
-#     - action: action_init_glpi_session
-#     - action: action_check_glpi_status
+#     - action: action_init_createl_session
+#     - action: action_check_createl_status
 #     - action: utter_ticket_not_found
 #     - action: utter_ask_ticket_id_again
 
@@ -74,12 +74,12 @@ stories:
     - action: utter_greet
     - user: "I need to create a new ticket"
       intent: create_ticket
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: ticket_form
     - active_loop: ticket_form
     - active_loop: null
     - action: utter_submit
-    - action: action_create_glpi_ticket
+    - action: action_create_createl_ticket
 
 - story: Ticket creation with missing info
   steps:
@@ -87,12 +87,12 @@ stories:
     - action: utter_greet
     - user: "I need help with something"
       intent: create_ticket
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: ticket_form
     - active_loop: ticket_form
     - active_loop: null
     - action: utter_submit
-    - action: action_create_glpi_ticket
+    - action: action_create_createl_ticket
 
 # ======================
 # Ticket Update Stories (Interactive Status)
@@ -101,16 +101,16 @@ stories:
 #   steps:
 #     - intent: update_ticket
 #     - slot_was_set:
-#       - ticket_id: "GLPI-123"
-#     - action: action_init_glpi_session
-#     - action: action_update_glpi_ticket # Initial call shows status and buttons
+#       - ticket_id: "Createl-123"
+#     - action: action_init_createl_session
+#     - action: action_update_createl_ticket # Initial call shows status and buttons
 #     - slot_was_set:
 #       - ticket_status: "New"
 #     - user: "Change it to [Solved](target_status)"
 #       intent: inform_update
 #       entities:
 #         - target_status: "Solved"
-#     - action: action_update_glpi_ticket # Second call performs update
+#     - action: action_update_createl_ticket # Second call performs update
 #     - slot_was_set:
 #         - target_status: null
 
@@ -118,42 +118,42 @@ stories:
 #   steps:
 #     - intent: update_ticket
 #     - slot_was_set:
-#       - ticket_id: "GLPI-123"
-#     - action: action_init_glpi_session
-#     - action: action_update_glpi_ticket
+#       - ticket_id: "Createl-123"
+#     - action: action_init_createl_session
+#     - action: action_update_createl_ticket
 #     - user: "Just a comment: [It works](update_content)"
 #       intent: inform_update
 #       entities:
 #         - update_content: "It works"
-#     - action: action_update_glpi_ticket
+#     - action: action_update_createl_ticket
 
 # ======================
 # Ticket Verification Stories (Interactive)
 # ======================
 - story: Verify resolution interactive
   steps:
-    - user: "Close ticket [GLPI-999](ticket_id)"
+    - user: "Close ticket [Createl-999](ticket_id)"
       intent: verify_resolution
       entities:
-        - ticket_id: "GLPI-999"
-    - action: action_init_glpi_session
-    - action: action_verify_glpi_resolution # Asks for confirmation
+        - ticket_id: "Createl-999"
+    - action: action_init_createl_session
+    - action: action_verify_createl_resolution # Asks for confirmation
     - slot_was_set:
       - ticket_status: "Pending"
     - user: "Yes, Close it" # Payload from button: /inform_update{"target_status":"Closed"}
       intent: inform_update
       entities:
         - target_status: "Closed"
-    - action: action_verify_glpi_resolution # Closes ticket
+    - action: action_verify_createl_resolution # Closes ticket
     - slot_was_set:
       - ticket_status: "Closed"
 
 - story: Verify resolution denied
   steps:
-    - user: "Close ticket [GLPI-888](ticket_id)"
+    - user: "Close ticket [Createl-888](ticket_id)"
       intent: verify_resolution
-    - action: action_init_glpi_session
-    - action: action_verify_glpi_resolution
+    - action: action_init_createl_session
+    - action: action_verify_createl_resolution
     - user: "No"
       intent: deny
     - action: utter_ask_anything_else
@@ -162,14 +162,14 @@ stories:
   steps:
     - intent: greet
     - action: utter_greet
-    - user: "Show comments for [GLPI-999](ticket_id)"
+    - user: "Show comments for [Createl-999](ticket_id)"
       intent: view_comments
       entities:
-        - ticket_id: "GLPI-999"
+        - ticket_id: "Createl-999"
     - slot_was_set:
-        - ticket_id: "GLPI-999"
-    - action: action_init_glpi_session
-    - action: action_init_glpi_session
+        - ticket_id: "Createl-999"
+    - action: action_init_createl_session
+    - action: action_init_createl_session
     - action: action_view_ticket_comments
     - action: utter_ask_anything_else
 
@@ -179,7 +179,7 @@ stories:
     - action: utter_greet
     - user: "Show all open tickets"
       intent: list_tickets
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: action_list_open_tickets
     - action: utter_ask_anything_else
 
@@ -187,25 +187,25 @@ stories:
 #   steps:
 #     - intent: update_ticket
 #     - slot_was_set:
-#       - ticket_id: "GLPI-123"
-#     - action: action_init_glpi_session
+#       - ticket_id: "Createl-123"
+#     - action: action_init_createl_session
 #     - action: utter_ask_update_content
 #     - user: "I rebooted the machine and it works now"
 #       intent: inform_update
 #       entities:
 #         - update_content: "I rebooted the machine and it works now"
-#     - action: action_update_glpi_ticket
+#     - action: action_update_createl_ticket
 #     - action: utter_ticket_updated
 
 # - story: Update ticket full info provided
 #   steps:
-#     - user: "Add comment to [GLPI-555](ticket_id): [Review logs please](update_content)"
+#     - user: "Add comment to [Createl-555](ticket_id): [Review logs please](update_content)"
 #       intent: update_ticket
 #       entities:
-#         - ticket_id: "GLPI-555"
+#         - ticket_id: "Createl-555"
 #         - update_content: "Review logs please"
-#     - action: action_init_glpi_session
-#     - action: action_update_glpi_ticket
+#     - action: action_init_createl_session
+#     - action: action_update_createl_ticket
 #     - action: utter_ticket_updated
 
 # ======================
@@ -215,13 +215,13 @@ stories:
   steps:
     - intent: greet
     - action: utter_greet
-    - user: "Show files for ticket [GLPI-555](ticket_id)"
+    - user: "Show files for ticket [Createl-555](ticket_id)"
       intent: list_attachments
       entities:
-        - ticket_id: "GLPI-555"
+        - ticket_id: "Createl-555"
     - slot_was_set:
-      - ticket_id: "GLPI-555"
-    - action: action_init_glpi_session
+      - ticket_id: "Createl-555"
+    - action: action_init_createl_session
     - action: action_list_attachments
     - action: utter_ask_anything_else
 
@@ -229,10 +229,10 @@ stories:
 #   steps:
 #     - intent: check_status
 #       entities:
-#         - ticket_id: "GLPI-123"
+#         - ticket_id: "Createl-123"
 #     - slot_was_set:
-#       - ticket_id: "GLPI-123"
-#     - action: action_check_glpi_status
+#       - ticket_id: "Createl-123"
+#     - action: action_check_createl_status
 #     - user: "Any attachments?"
 #       intent: list_attachments
 #     - action: action_list_attachments
@@ -243,7 +243,7 @@ stories:
   steps:
     - user: "List attachments"
       intent: list_attachments
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: utter_ask_ticket_id
     - user: "For ticket [9](ticket_id)"
       intent: inform
@@ -270,14 +270,14 @@ stories:
 #   steps:
 #     - intent: greet
 #     - action: utter_greet
-#     - user: "Status for [GLPI-999]"
+#     - user: "Status for [Createl-999]"
 #       intent: check_status
 #       entities:
-#         - ticket_id: "GLPI-999"
+#         - ticket_id: "Createl-999"
 #     - slot_was_set:
-#       - ticket_id: "GLPI-999"
-#     - action: action_init_glpi_session
-#     - action: action_check_glpi_status
+#       - ticket_id: "Createl-999"
+#     - action: action_init_createl_session
+#     - action: action_check_createl_status
 #     - action: utter_error_occurred
 #     - action: utter_ask_retry
 
@@ -290,7 +290,7 @@ stories:
     - action: utter_greet
     - user: "I need to create a ticket"
       intent: create_ticket
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: ticket_form
     - active_loop: ticket_form
     - user: "Actually, nevermind"
@@ -309,7 +309,7 @@ stories:
       entities:
         - issue_type: "hardware"
         - urgency: "high"
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: ticket_form
     - active_loop: ticket_form
     - user: "[The printer in accounting is jammed]"
@@ -319,7 +319,7 @@ stories:
     - action: ticket_form
     - active_loop: null
     - action: utter_submit
-    - action: action_create_glpi_ticket
+    - action: action_create_createl_ticket
 
 # ======================
 # Edge Cases
@@ -334,11 +334,11 @@ stories:
         - description: "my laptop not connecting to wifi"
         - issue_type: "network"
         - urgency: "high"
-    - action: action_init_glpi_session
+    - action: action_init_createl_session
     - action: ticket_form
     - active_loop: null
     - action: utter_submit
-    - action: action_create_glpi_ticket
+    - action: action_create_createl_ticket
 
 - story: User asks for help
   steps:

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:widget:*)"
+      "Bash(npm run build:widget:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

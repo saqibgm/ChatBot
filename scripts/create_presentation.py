@@ -9,8 +9,8 @@ import os
 
 # ============== PROFESSIONAL CORPORATE COLORS ==============
 
-# GLPI Project - Clean Navy Blue Theme
-GLPI_COLORS = {
+# Createl Project - Clean Navy Blue Theme
+Createl_COLORS = {
     'bg': RGBColor(0xff, 0xff, 0xff),        # White background
     'header_bg': RGBColor(0x1e, 0x3a, 0x5f),  # Navy blue
     'accent': RGBColor(0x1e, 0x3a, 0x5f),     # Navy blue
@@ -243,14 +243,14 @@ def add_table_slide(prs, title, headers, rows, colors, emoji=""):
     return slide
 
 
-def create_glpi_presentation():
-    """Project IQ Chatbot - Updated Features"""
+def create_createl_presentation():
+    """Createl Chatbot - Updated Features"""
     prs = Presentation()
     prs.slide_width = Inches(10)
     prs.slide_height = Inches(7.5)
-    C = GLPI_COLORS
+    C = Createl_COLORS
     
-    add_title_slide(prs, "Project IQ Chatbot",
+    add_title_slide(prs, "Createl Chatbot",
         "Intelligent IT Support Automation\n\nRasa 3.6 • React • PostgreSQL", C)
     
     add_table_slide(prs, "Technology Stack",
@@ -260,7 +260,7 @@ def create_glpi_presentation():
             ["Frontend", "React 19 + Tailwind CSS"],
             ["Backend", "Flask REST API"],
             ["Database", "PostgreSQL 18"],
-            ["Integration", "GLPI REST API"],
+            ["Integration", "Createl REST API"],
         ], C, "🔧")
     
     add_content_slide(prs, "Core Features", [
@@ -320,8 +320,8 @@ def create_glpi_presentation():
     ], C, "🖼️")
     
     add_table_slide(prs, "vs Competitors",
-        ["Feature", "Project IQ", "Zendesk", "ServiceNow"],
-        [["GLPI Native", "✅", "❌", "❌"], ["Self-Hosted", "✅", "❌", "⚠️"], ["Cost/Month", "$50", "$150+", "$500+"]], C, "⚔️")
+        ["Feature", "Createl", "Zendesk", "ServiceNow"],
+        [["Createl Native", "✅", "❌", "❌"], ["Self-Hosted", "✅", "❌", "⚠️"], ["Cost/Month", "$50", "$150+", "$500+"]], C, "⚔️")
     
     add_table_slide(prs, "Return on Investment",
         ["Metric", "Traditional", "AI-Assisted", "Savings"],
@@ -351,11 +351,11 @@ def create_glpi_presentation():
         ], C, "📋")
     
     add_title_slide(prs, "Questions?",
-        "Project IQ Chatbot Demo\n\nThank you!", C)
+        "Createl Chatbot Demo\n\nThank you!", C)
     
     path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Project_IQ _Chatbot.pptx")
     prs.save(path)
-    print(f"✅ Project IQ: {path}")
+    print(f"✅ Createl: {path}")
 
 
 def create_ai_coding_presentation():
@@ -518,6 +518,6 @@ def create_ai_coding_presentation():
 
 
 if __name__ == "__main__":
-    create_glpi_presentation()
+    create_createl_presentation()
     create_ai_coding_presentation()
     print("\n✨ Both presentations created!")

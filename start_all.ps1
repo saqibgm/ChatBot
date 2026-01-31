@@ -1,4 +1,4 @@
-Write-Host "Starting Rasa GLPI Bot Services..." -ForegroundColor Cyan
+Write-Host "Starting Rasa Createl Bot Services..." -ForegroundColor Cyan
 
 # 1. Stop existing instances
 Write-Host "Stopping existing rasa/python processes..." -ForegroundColor Yellow

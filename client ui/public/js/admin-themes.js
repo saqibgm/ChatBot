@@ -16,8 +16,8 @@ async function loadThemes() {
             intTheme.innerHTML = '<option value="">Default (Black)</option>';
 
             data.themes.forEach(theme => {
-                selector.innerHTML += `<option value="${theme.id}">${theme.name}${theme.is_default ? ' ★' : ''}</option>`;
-                intTheme.innerHTML += `<option value="${theme.id}">${theme.name}</option>`;
+                selector.innerHTML += `<option value="${theme.id}">${theme.id} - ${theme.name}${theme.is_default ? ' ★' : ''}</option>`;
+                intTheme.innerHTML += `<option value="${theme.id}">${theme.id} - ${theme.name}</option>`;
             });
         }
     } catch (e) {
@@ -39,7 +39,7 @@ async function loadTheme(themeId) {
         document.getElementById('theme-text-color-text').value = '#1f2937';
         document.getElementById('theme-font').value = 'Inter';
         document.getElementById('theme-radius').value = '12';
-        document.getElementById('theme-bot-icon').value = '🤖';
+        document.getElementById('theme-bot-icon').value = '🛒';
         document.getElementById('theme-bot-color').value = '#6366f1';
         document.getElementById('theme-bot-color-text').value = '#6366f1';
         document.getElementById('theme-user-icon').value = '👤';
@@ -78,7 +78,7 @@ async function loadTheme(themeId) {
             document.getElementById('theme-text-color-text').value = settings.textColor || '#1f2937';
             document.getElementById('theme-font').value = settings.fontFamily || 'Inter';
             document.getElementById('theme-radius').value = settings.borderRadius || '12';
-            document.getElementById('theme-bot-icon').value = settings.botIcon || '🤖';
+            document.getElementById('theme-bot-icon').value = settings.botIcon || '🛒';
             document.getElementById('theme-bot-color').value = settings.botIconColor || primaryColor;
             document.getElementById('theme-bot-color-text').value = settings.botIconColor || primaryColor;
             document.getElementById('theme-user-icon').value = settings.userIcon || '👤';
@@ -245,4 +245,8 @@ function updatePreview() {
     if (botMsg) botMsg.style.fontSize = `${messageSize}px`;
     const previewInput = document.querySelector('#theme-preview input[type="text"]');
     if (previewInput) previewInput.style.fontSize = `${inputSize}px`;
+
+    // Update action button icon colors in preview
+    const actionBtnSvgs = document.querySelectorAll('#preview-action-btn-1 svg, #preview-action-btn-2 svg, #preview-action-btn-3 svg');
+    actionBtnSvgs.forEach(svg => { svg.style.color = primary; });
 }

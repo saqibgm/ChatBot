@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLPI Widget Integration Test</title>
+    <title>Createl Widget Integration Test</title>
     <!-- Cache-busting for CSS -->
     <link rel="stylesheet" href="modern-web-interface.css?v=${new Date().getTime()}">
     <style>
@@ -27,7 +27,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        glpi-chat-widget {
+        createl-chat-widget {
             display: block;
             /* Ensure the custom element is block-level */
         }
@@ -42,14 +42,14 @@
         <p><small>(If you see a red border box but no chat, it's a rendering issue)</small></p>
     </div>
 
-    <!-- GLPI Bot Widget - Using Corporate Blue theme (ID: 6) -->
-    <glpi-chat-widget title="Createl Bot" app-id="IT" theme-id="6"></glpi-chat-widget>
+    <!-- Createl Bot Widget - Using Corporate Blue theme (ID: 6) -->
+    <createl-chat-widget title="Createl Bot" app-id="IT" theme-id="6"></createl-chat-widget>
 
     <!-- Cache-busting for JS -->
-    <script src="glpi-chat-widget.js?v=99999"></script>
+    <script src="createl-chat-widget.js?v=99999"></script>
     <script>
         // Force refresh JS if needed
-        const script = document.querySelector('script[src*="glpi-chat-widget.js"]');
+        const script = document.querySelector('script[src*="createl-chat-widget.js"]');
         script.src = script.src.split('?')[0] + '?v=' + new Date().getTime();
     </script>
 </body>

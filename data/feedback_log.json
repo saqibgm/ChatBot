@@ -93,7 +93,7 @@
       "sender_id": "8e6beb27-e850-4ef3-bba6-a20a8697c620",
       "feedback": "negative",
       "user_query": "/check_status",
-      "bot_response_preview": "Please provide the **ID of the ticket** you want to check (e.g., GLPI-1234 or just 1234).",
+      "bot_response_preview": "Please provide the **ID of the ticket** you want to check (e.g., Createl-1234 or just 1234).",
       "app_id": "IT"
     },
     {
@@ -172,7 +172,7 @@
       "timestamp": "2025-12-24T14:51:23.418220",
       "sender_id": "1e600bb7-2249-4890-8bb3-e1f33fa1a249",
       "feedback": "positive",
-      "user_query": "/login{\"glpi_username\": \"sidrees\", \"glpi_password\": \"password\"}",
+      "user_query": "/login{\"createl_username\": \"sidrees\", \"createl_password\": \"password\"}",
       "bot_response_preview": "✅ Welcome, Saqib! You are now logged in. How can I help you today?",
       "app_id": null
     },

@@ -5,23 +5,23 @@ import ChatWindow from './components/ChatWindow'
 
 const ADMIN_API_URL = 'http://localhost:8181';
 
-class GlpiChatWidget extends HTMLElement {
+class CreatelChatWidget extends HTMLElement {
     constructor() {
         super();
-        console.log("GLPI Widget: Constructor called");
+        console.log("Createl Widget: Constructor called");
         this.mountPoint = null;
         this.root = null;
         this.themeData = null; // Cached theme data
     }
 
     connectedCallback() {
-        console.log("GLPI Widget: Connected callback");
+        console.log("Createl Widget: Connected callback");
         try {
             if (!this.mountPoint) {
                 this.mountPoint = document.createElement('div');
                 this.appendChild(this.mountPoint);
                 this.root = createRoot(this.mountPoint);
-                console.log("GLPI Widget: Root created");
+                console.log("Createl Widget: Root created");
             }
             this.loadAndRender();
         } catch (e) {
@@ -61,10 +61,10 @@ class GlpiChatWidget extends HTMLElement {
                             id: data.theme.id,
                             ...settings
                         };
-                        console.log("GLPI Widget: Loaded theme", this.themeData);
+                        console.log("Createl Widget: Loaded theme", this.themeData);
                     }
                 } catch (e) {
-                    console.warn("GLPI Widget: Failed to load theme", e);
+                    console.warn("Createl Widget: Failed to load theme", e);
                 }
             }
         } else if (themeIdAttr && themeIdAttr.startsWith('#')) {
@@ -80,7 +80,7 @@ class GlpiChatWidget extends HTMLElement {
     render() {
         if (!this.root) return;
 
-        const title = this.getAttribute('title') || 'GLPI Support';
+        const title = this.getAttribute('title') || 'Createl Shop';
         const appId = this.getAttribute('app-id') || 'General';
 
         this.root.render(
@@ -98,8 +98,8 @@ class GlpiChatWidget extends HTMLElement {
 }
 
 // Define the custom element
-if (!customElements.get('glpi-chat-widget')) {
-    customElements.define('glpi-chat-widget', GlpiChatWidget);
-    console.log("GLPI Widget: Registered <glpi-chat-widget>");
+if (!customElements.get('createl-chat-widget')) {
+    customElements.define('createl-chat-widget', CreatelChatWidget);
+    console.log("Createl Widget: Registered <createl-chat-widget>");
 }
 

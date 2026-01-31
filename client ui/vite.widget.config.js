@@ -10,10 +10,11 @@ export default defineConfig({
     build: {
         outDir: 'dist-widget',
         emptyOutDir: true,
+        assetsInlineLimit: 100000,
         lib: {
             entry: resolve(__dirname, 'src/widget.jsx'),
-            name: 'GlpiChatWidget',
-            fileName: (format) => `glpi-chat-widget.js`,
+            name: 'CreatelChatWidget',
+            fileName: (format) => `createl-chat-widget.js`,
             formats: ['iife']
         },
         minify: false,
