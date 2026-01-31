@@ -622,7 +622,7 @@ class ActionTrackOrder(Action):
                 "Delivered": "📦"
             }
             
-            status = t.get("status", "Unknown")
+            status = t.get("order_status", "Unknown")
             emoji = status_emoji.get(status, "📋")
             
             message = f"**{emoji} Order #{t.get('order_number', order_id)} Status**\n\n"

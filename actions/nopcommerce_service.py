@@ -547,7 +547,7 @@ class NopCommerceService:
             "customer_email": order.get("customer_email") or order.get("CustomerEmail") or "",
             "customer_name": order.get("customer_name") or order.get("CustomerName") or "",
             "customer_ip": order.get("customer_ip") or order.get("CustomerIp") or "",
-            "status": order.get("order_status") or order.get("OrderStatus") or order.get("status") or order.get("Status") or "Unknown",
+            "order_status": order.get("order_status") or order.get("OrderStatus") or order.get("status") or order.get("Status") or "Unknown",
             "order_status_id": order.get("order_status_id") or order.get("OrderStatusId"),
             "payment_status": order.get("payment_status") or order.get("PaymentStatus"),
             "payment_status_id": order.get("payment_status_id") or order.get("PaymentStatusId"),
@@ -1264,7 +1264,7 @@ class NopCommerceService:
                         normalized_orders.append({
                             "id": o.get("id") or o.get("Id"),
                             "order_number": o.get("custom_order_number") or o.get("CustomOrderNumber") or o.get("id"),
-                            "status": o.get("order_status") or o.get("OrderStatus") or "Unknown",
+                            "order_status": o.get("order_status") or o.get("OrderStatus") or "Unknown",
                             "total": o.get("order_total") or o.get("OrderTotal") or 0,
                             "created_on": o.get("created_on_utc") or o.get("CreatedOnUtc"),
                             "payment_status": o.get("payment_status") or o.get("PaymentStatus"),
@@ -1307,7 +1307,7 @@ class NopCommerceService:
                 "order": {
                     "id": order.get("id"),
                     "order_number": order.get("order_number"),
-                    "status": order.get("status"),
+                    "order_status": order.get("order_status"),
                     "payment_status": order.get("payment_status"),
                     "shipping_status": order.get("shipping_status"),
                     "total": order.get("total"),
@@ -1355,7 +1355,7 @@ class NopCommerceService:
                         "order": {
                             "id": order.get("id") or order.get("Id"),
                             "order_number": order.get("custom_order_number") or order.get("id"),
-                            "status": order.get("order_status") or order.get("OrderStatus") or "Unknown",
+                            "order_status": order.get("order_status") or order.get("OrderStatus") or "Unknown",
                             "payment_status": order.get("payment_status") or order.get("PaymentStatus"),
                             "shipping_status": order.get("shipping_status") or order.get("ShippingStatus"),
                             "total": order.get("order_total") or order.get("OrderTotal") or 0,
@@ -1397,7 +1397,7 @@ class NopCommerceService:
             order = result["order"]
             
             # Determine tracking status message
-            status = order.get("status", "Unknown")
+            status = order.get("order_status", "Unknown")
             shipping_status = order.get("shipping_status", "Unknown")
             payment_status = order.get("payment_status", "Unknown")
             
@@ -1422,7 +1422,7 @@ class NopCommerceService:
                 "tracking": {
                     "order_id": order_id,
                     "order_number": order.get("order_number"),
-                    "status": status,
+                    "order_status": status,
                     "shipping_status": shipping_status,
                     "payment_status": payment_status,
                     "message": tracking_message,
