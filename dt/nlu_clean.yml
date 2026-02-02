@@ -1,0 +1,227 @@
+# nlu_clean.yml
+
+version: "3.1"
+
+nlu:
+  - intent: greet
+    examples: |
+      - hi
+      - hello
+      - hey
+      - good morning
+      - good evening
+
+  - intent: goodbye
+    examples: |
+      - bye
+      - goodbye
+      - see you
+      - later
+
+  - intent: help
+    examples: |
+      - help
+      - I need help
+      - can you help me
+      - what can you do
+
+  - intent: affirm
+    examples: |
+      - yes
+      - yeah
+      - correct
+      - sure
+
+  - intent: deny
+    examples: |
+      - no
+      - nope
+      - not really
+      - don't do that
+
+  - intent: stop
+    examples: |
+      - stop
+      - cancel
+      - never mind
+      - forget it
+
+  - intent: clear
+    examples: |
+      - clear
+      - reset
+      - start over
+      - restart
+
+  - intent: out_of_scope
+    examples: |
+      - tell me a joke
+      - what's the weather
+      - sing a song
+
+  - intent: login
+    examples: |
+      - login
+      - sign in
+      - log me in
+      - authenticate
+      - my email is [user@example.com](nop_username)
+      - my password is [p@ssw0rd](nop_password)
+
+  - intent: inform
+    examples: |
+      - here are the details
+      - the order id is [10001](order_id)
+      - it is for product [200](product_id)
+
+  - intent: feedback_positive
+    examples: |
+      - thanks
+      - that helped
+      - great
+
+  - intent: feedback_negative
+    examples: |
+      - not helpful
+      - that didn't help
+      - bad
+
+  - intent: rating_1
+    examples: |
+      - 1
+      - 1 star
+      - terrible
+
+  - intent: rating_2
+    examples: |
+      - 2
+      - 2 stars
+      - bad
+
+  - intent: rating_3
+    examples: |
+      - 3
+      - 3 stars
+      - okay
+
+  - intent: rating_4
+    examples: |
+      - 4
+      - 4 stars
+      - good
+
+  - intent: rating_5
+    examples: |
+      - 5
+      - 5 stars
+      - excellent
+
+  # =========================
+  # E-COMMERCE INTENTS
+  # =========================
+
+  - intent: search_products
+    examples: |
+      - search products
+      - find products
+      - show me products
+      - search for [laptops](product_name)
+      - find [keyboard](product_name)
+      - browse [electronics](product_name)
+
+  - intent: product_details
+    examples: |
+      - product details
+      - details of product [60](product_id)
+      - details of product [123](product_id)
+      - details for product [456](product_id)
+      - show details of product [789](product_id)
+      - show product [123](product_id)
+      - info on product [456](product_id)
+      - details about [camera](product_name)
+      - details of product [60](product_id)
+      - details of product [100](product_id)
+      - product [60](product_id) details
+      - product details for [60](product_id)
+      - show details for product [60](product_id)
+      - show details of product [60](product_id)
+      - get details for product [60](product_id)
+      - tell me about product [60](product_id)
+      - info about product [60](product_id)
+      - product info for [60](product_id)
+
+  - intent: check_stock
+    examples: |
+      - check stock
+      - is product [123](product_id) in stock
+      - stock for [headphones](product_name)
+      - availability of [456](product_id)
+
+  - regex: product_id
+    examples: |
+      - \b\d+\b
+  - intent: update_stock
+    examples: |
+      - update stock for [123](product_id)
+      - set stock to [50](stock_quantity) for product [456](product_id)
+      - add [10](stock_quantity) units to [200](product_id)
+      - decrease stock for [500](product_id) by [5](stock_quantity)
+
+  - intent: track_order
+    examples: |
+      - track order
+      - where is my order [10001](order_id)
+      - order status for [10002](order_id)
+
+  - intent: get_invoice
+    examples: |
+      - get invoice
+      - invoice for order [10001](order_id)
+      - download invoice [10002](order_id)
+
+  - intent: update_order_status
+    examples: |
+      - update order status
+      - set order [10003](order_id) to [processing](order_status)
+      - mark order [10004](order_id) as [complete](order_status)
+
+  - intent: list_orders
+    examples: |
+      - list orders
+      - show my orders
+      - order history
+
+  # =========================
+  # ADMIN INTENTS
+  # =========================
+
+  - intent: admin_find_product
+    examples: |
+      - find product [SKU-100](product_identifier)
+      - lookup product [ABC123](product_identifier)
+
+  - intent: admin_find_customer
+    examples: |
+      - find customer [john@example.com](customer_query)
+      - search customer [maria](customer_query)
+
+  - intent: admin_get_customer
+    examples: |
+      - get customer [123](customer_id)
+      - show customer [456](customer_id)
+
+  - intent: admin_get_customer_details
+    examples: |
+      - customer details [123](customer_id)
+      - full customer profile [789](customer_id)
+
+  - intent: admin_customer_last_orders
+    examples: |
+      - last [5](order_limit) orders for [john@example.com](customer_query)
+      - recent orders for [123](customer_query)
+
+  - intent: admin_token_me
+    examples: |
+      - admin profile
+      - admin token me
+      - show admin identity

@@ -4,8 +4,8 @@
         <p class="text-gray-500 mt-1">Monitor chatbot performance and user interactions</p>
     </div>
     <div class="flex items-center gap-3">
-        <label class="text-sm font-medium text-gray-600">Filter by App:</label>
-        <select id="analytics-app-filter" class="input-field w-48" onchange="filterAnalytics()">
+        <label class="text-sm font-medium text-gray-600" style="display: none;">Filter by App:</label>
+        <select id="analytics-app-filter" class="input-field w-48" onchange="filterAnalytics()" style="display: none;">
             <option value="all">All Apps</option>
         </select>
         <button onclick="refreshAnalytics()" class="btn-secondary flex items-center gap-2">

@@ -324,7 +324,7 @@ class NopCommerceService:
                         "email": data.get("email") or data.get("Email") or username,
                         "firstName": data.get("firstName") or data.get("FirstName") or data.get("first_name"),
                         "lastName": data.get("lastName") or data.get("LastName") or data.get("last_name"),
-                        "name": f"{customer.get('FirstName', '')} {customer.get('LastName', '')}".strip()
+                        "name": f"{data.get('FirstName', '')} {data.get('LastName', '')}".strip()
                         # data.get("name") or data.get("Name") or data.get("displayName") or data.get("DisplayName"),
                     }
                     expires_in = data.get("expires_in") or data.get("expiresIn")
@@ -837,12 +837,36 @@ class NopCommerceService:
         response = self._admin_request("GET", f"/api/admin/products/find/{identifier}")
         if response and response.status_code == 200:
             data = response.json()
-            product = data.get("product") or data.get("Product") or data
-            return {
-                "success": True,
-                "product": self._normalize_product(product),
-                "error": None
-            }
+            
+            # Check explicit 'found' flag if present
+            if "found" in data and not data["found"]:
+                 return {
+                    "success": False,
+                    "product": None,
+                    "error": f"Product not found for identifier '{identifier}'."
+                }
+
+            # Try to get product(s) from response
+            product = None
+            products = data.get("products") or data.get("Products")
+            
+            if products:
+                # If list, take first item
+                if isinstance(products, list) and len(products) > 0:
+                    product = products[0]
+                elif isinstance(products, dict):
+                    product = products
+            else:
+                 # Fallback: check for single 'product' key or use data itself if it looks like a product
+                 product = data.get("product") or data.get("Product") or data
+
+            if product:
+                return {
+                    "success": True,
+                    "product": self._normalize_product(product),
+                    "error": None
+                }
+        
         return {
             "success": False,
             "product": None,

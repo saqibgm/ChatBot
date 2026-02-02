@@ -75,7 +75,7 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
             transition={{ duration: 0.2 }}
             className={`flex w-full mb-3 ${isBot ? 'justify-start' : 'justify-end'}`}
         >
-            <div className={`flex ${message.ticket_form ? 'w-full max-w-full' : 'max-w-[90%]'} ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
+            <div className={`flex ${message.ticket_form ? 'w-full max-w-full' : 'max-w-[95%]'} ${isBot ? 'flex-row' : 'flex-row-reverse'}`}>
                 {/* Avatar */}
                 <div
                     className={`flex-shrink-0 h-9 w-9 rounded-xl flex items-center justify-center text-base shadow-sm ${isBot ? 'mr-2.5' : 'ml-2.5'}`}
@@ -104,10 +104,28 @@ const MessageBubble = ({ message, onButtonClick, onFeedback, themeColor = null, 
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{
-                                            table: ({ node, ...props }) => <table className="min-w-full divide-y divide-gray-200 my-2 border rounded-md overflow-hidden" {...props} />,
-                                            // thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
-                                            // th: ({ node, ...props }) => <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b" {...props} />,
-                                            td: ({ node, ...props }) => <td className="px-3 py-2 whitespace-normal text-sm text-gray-700 border-b border-r last:border-r-0 border-gray-100 bg-white" {...props} />,
+                                            table: ({ node, children, ...props }) => {
+                                                // Count columns from AST node
+                                                let colCount = 0;
+                                                try {
+                                                    const headRow = node?.children?.[0]?.children?.[0];
+                                                    if (headRow) colCount = headRow.children?.length || 0;
+                                                } catch (e) {}
+                                                const colWidths = colCount === 3 ? ['65%', '23%', '12%'] : null;
+                                                return (
+                                                    <table className="min-w-full w-full divide-y divide-gray-200 my-2 border rounded-md overflow-hidden" style={colWidths ? { tableLayout: 'fixed' } : {}} {...props}>
+                                                        {colWidths && (
+                                                            <colgroup>
+                                                                {colWidths.map((w, i) => <col key={i} style={{ width: w }} />)}
+                                                            </colgroup>
+                                                        )}
+                                                        {children}
+                                                    </table>
+                                                );
+                                            },
+                                            thead: ({ node, ...props }) => <thead className="bg-gray-50" {...props} />,
+                                            th: ({ node, ...props }) => <th className="px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b" {...props} />,
+                                            td: ({ node, ...props }) => <td className="px-1 py-1 whitespace-normal text-sm text-gray-700 border-b border-r last:border-r-0 border-gray-100 bg-white" {...props} />,
                                             a: ({ node, ...props }) => <a style={{ color: primaryColor }} className="hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
                                             ul: ({ node, ...props }) => <ul className="list-disc pl-5" {...props} />,
                                             ol: ({ node, ...props }) => <ol className="list-decimal pl-5" {...props} />,

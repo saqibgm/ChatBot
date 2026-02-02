@@ -96,6 +96,11 @@ nlu:
       - here are the details
       - the order id is [10001](order_id)
       - it is for product [200](product_id)
+      - last [10](order_limit)
+      - last [15](order_limit)
+      - last [20](order_limit)
+      - show [7](order_limit) orders
+      - [25](order_limit) orders
 
   - intent: feedback_positive
     examples: |

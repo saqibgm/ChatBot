@@ -33124,7 +33124,7 @@ if (typeof window !== "undefined" && !window.process) {
         animate: { opacity: 1, y: 0 },
         transition: { duration: 0.2 },
         className: `flex w-full mb-3 ${isBot ? "justify-start" : "justify-end"}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `flex ${message.ticket_form ? "w-full max-w-full" : "max-w-[90%]"} ${isBot ? "flex-row" : "flex-row-reverse"}`, children: [
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `flex ${message.ticket_form ? "w-full max-w-full" : "max-w-[95%]"} ${isBot ? "flex-row" : "flex-row-reverse"}`, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
@@ -33145,10 +33145,22 @@ if (typeof window !== "undefined" && !window.process) {
                     {
                       remarkPlugins: [remarkGfm],
                       components: {
-                        table: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("table", { className: "min-w-full divide-y divide-gray-200 my-2 border rounded-md overflow-hidden", ...props }),
+                        table: ({ node: node2, children, ...props }) => {
+                          let colCount = 0;
+                          try {
+                            const headRow = node2?.children?.[0]?.children?.[0];
+                            if (headRow) colCount = headRow.children?.length || 0;
+                          } catch (e) {
+                          }
+                          const colWidths = colCount === 3 ? ["65%", "23%", "12%"] : null;
+                          return /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-full w-full divide-y divide-gray-200 my-2 border rounded-md overflow-hidden", style: colWidths ? { tableLayout: "fixed" } : {}, ...props, children: [
+                            colWidths && /* @__PURE__ */ jsxRuntimeExports.jsx("colgroup", { children: colWidths.map((w, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("col", { style: { width: w } }, i)) }),
+                            children
+                          ] });
+                        },
                         thead: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50", ...props }),
-                        th: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b", ...props }),
-                        td: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2 whitespace-normal text-sm text-gray-700 border-b border-r last:border-r-0 border-gray-100 bg-white", ...props }),
+                        th: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-1 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b", ...props }),
+                        td: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-1 py-1 whitespace-normal text-sm text-gray-700 border-b border-r last:border-r-0 border-gray-100 bg-white", ...props }),
                         a: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("a", { style: { color: primaryColor }, className: "hover:underline", target: "_blank", rel: "noopener noreferrer", ...props }),
                         ul: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "list-disc pl-5", ...props }),
                         ol: ({ node: node2, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "list-decimal pl-5", ...props })
@@ -33479,6 +33491,7 @@ if (typeof window !== "undefined" && !window.process) {
     const [searchContext, setSearchContext] = reactExports.useState({ open: false, type: null });
     const [searchQuery, setSearchQuery] = reactExports.useState("");
     const [lastProductId, setLastProductId] = reactExports.useState("");
+    const lastCustomerIdRef = reactExports.useRef("");
     const [stockPopup, setStockPopup] = reactExports.useState({ open: false, productId: "" });
     const [stockQuantity, setStockQuantity] = reactExports.useState("");
     const [isLoading, setIsLoading] = reactExports.useState(false);
@@ -33605,6 +33618,11 @@ if (typeof window !== "undefined" && !window.process) {
         setShowTicketIdPopup(true);
         return;
       }
+      const updateLastProductId = (data) => {
+        if (data?.product_id) {
+          setLastProductId(String(data.product_id));
+        }
+      };
       if (payload === "/list_tickets" && !payload.includes("{")) {
         setShowTicketFilterPopup(true);
         return;
@@ -33623,21 +33641,31 @@ if (typeof window !== "undefined" && !window.process) {
       }
       if (payload === "/check_stock" || payload.startsWith("/check_stock{")) {
         const data = extractPayloadData(payload, "/check_stock");
+        updateLastProductId(data);
         if (data?.product_id) {
           setSearchQuery(String(data.product_id));
         }
         openSearchPopup("stock_check");
         return;
       }
+      if (payload === "/product_details" || payload.startsWith("/product_details{")) {
+        const data = extractPayloadData(payload, "/product_details");
+        updateLastProductId(data);
+      }
       if (payload === "/update_stock" || payload.startsWith("/update_stock{")) {
         const data = extractPayloadData(payload, "/update_stock");
+        updateLastProductId(data);
         if (data?.product_id) {
-          setStockPopup({ open: true, productId: String(data.product_id) });
-          setStockQuantity("");
+          if (data.stock_quantity) ;
+          else {
+            setStockPopup({ open: true, productId: String(data.product_id) });
+            setStockQuantity("");
+            return;
+          }
         } else {
           openStockPopup();
+          return;
         }
-        return;
       }
       if (payload === "/admin_find_customer" || payload.startsWith("/admin_find_customer{")) {
         openSearchPopup("customer");
@@ -33654,7 +33682,7 @@ if (typeof window !== "undefined" && !window.process) {
       if (payload === "/admin_customer_last_orders" || payload.startsWith("/admin_customer_last_orders{")) {
         const data = extractPayloadData(payload, "/admin_customer_last_orders");
         if (data?.customer_id) {
-          setSearchQuery(String(data.customer_id));
+          lastCustomerIdRef.current = String(data.customer_id);
         }
         openSearchPopup("customer_orders");
         return;
@@ -33677,6 +33705,38 @@ Priority: ${data.priority} `;
         }
       } else if (payload.includes("status_id")) {
         displayText = "🔍 Filtering tickets...";
+      } else if (payload.startsWith("/admin_get_customer_details")) {
+        displayText = "📋 Loading customer details...";
+      } else if (payload.startsWith("/admin_get_customer")) {
+        displayText = "🔍 Looking up customer...";
+      } else if (payload.startsWith("/admin_customer_last_orders")) {
+        displayText = "🧾 Fetching last orders...";
+      } else if (payload.startsWith("/admin_find_customer")) {
+        displayText = "🔍 Searching for customer...";
+      } else if (payload.startsWith("/admin_find_product")) {
+        displayText = "🔍 Searching for product...";
+      } else if (payload.startsWith("/admin_token_me")) {
+        displayText = "🔐 Loading admin profile...";
+      } else if (payload.startsWith("/admin_me")) {
+        displayText = "👤 Loading admin user...";
+      } else if (payload.startsWith("/track_order")) {
+        displayText = "🛒 Tracking order...";
+      } else if (payload.startsWith("/search_products")) {
+        displayText = "🔍 Searching products...";
+      } else if (payload.startsWith("/check_stock")) {
+        displayText = "📦 Checking stock...";
+      } else if (payload.startsWith("/update_stock")) {
+        displayText = "📦 Updating stock...";
+      } else if (payload.startsWith("/get_invoice")) {
+        displayText = "📄 Getting invoice...";
+      } else if (payload.startsWith("/product_details")) {
+        displayText = "📦 Loading product details...";
+      } else if (payload.startsWith("/list_orders")) {
+        displayText = "🧾 Loading orders...";
+      } else if (payload.startsWith("/help")) {
+        displayText = "❓ Help";
+      } else if (payload.startsWith("/check_status")) {
+        displayText = "🔍 Checking status...";
       }
       const userMsg = { id: v4(), sender: senderId, text: displayText };
       setMessages((prev) => [...prev, userMsg]);
@@ -33764,20 +33824,22 @@ Priority: ${data.priority} `;
         setIsLoading(false);
       }
     };
-    const sendTextMessage = async (text2) => {
+    const sendTextMessage = async (text2, displayText = null) => {
       if (!text2.trim()) return;
       const productMatch = text2.match(/product\s*(?:id\s*)?(\d+)/i);
       if (productMatch?.[1]) {
         setLastProductId(productMatch[1]);
       }
-      const validation = validateInput(text2);
-      if (!validation.valid) {
-        setMessages((prev) => [...prev, {
-          id: v4(),
-          sender: "bot",
-          text: `⚠️ ${validation.error} `
-        }]);
-        return;
+      if (!displayText) {
+        const validation = validateInput(text2);
+        if (!validation.valid) {
+          setMessages((prev) => [...prev, {
+            id: v4(),
+            sender: "bot",
+            text: `⚠️ ${validation.error} `
+          }]);
+          return;
+        }
       }
       const themeMatch = text2.match(/^set\s+theme\s+(\d+)$/i);
       if (themeMatch) {
@@ -33812,7 +33874,7 @@ Priority: ${data.priority} `;
         setIsLoading(false);
         return;
       }
-      const userMsg = { id: v4(), sender: senderId, text: text2 };
+      const userMsg = { id: v4(), sender: senderId, text: displayText || text2 };
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
       try {
@@ -33910,7 +33972,8 @@ Priority: ${data.priority} `;
         label: "Product",
         icon: Package,
         placeholder: "Enter product ID (number)",
-        buildMessage: (q) => `/product_details{"product_id":"${q}"}`
+        buildMessage: (q) => `/product_details{"product_id":"${q}"}`,
+        displayText: (q) => `Loading product #${q} details...`
       },
       {
         key: "search_product",
@@ -33918,6 +33981,7 @@ Priority: ${data.priority} `;
         icon: Search,
         placeholder: "Enter product name",
         buildMessage: (q) => `/search_products{"search_query":"${q}"}`,
+        displayText: (q) => `Searching products: "${q}"...`,
         hidden: true
       },
       {
@@ -33925,28 +33989,32 @@ Priority: ${data.priority} `;
         label: "Order",
         icon: ShoppingCart,
         placeholder: "Enter order ID",
-        buildMessage: (q) => `/track_order{"order_id":"${q}"}`
+        buildMessage: (q) => `/track_order{"order_id":"${q}"}`,
+        displayText: (q) => `Tracking order #${q}...`
       },
       {
         key: "customer",
         label: "Customer",
         icon: Users,
         placeholder: "Enter customer ID (number)",
-        buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`
+        buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`,
+        displayText: (q) => `Looking up customer #${q}...`
       },
       {
         key: "invoice",
         label: "Invoice",
         icon: FileText,
         placeholder: "Enter order ID for invoice",
-        buildMessage: (q) => `/get_invoice{"order_id":"${q}"}`
+        buildMessage: (q) => `/get_invoice{"order_id":"${q}"}`,
+        displayText: (q) => `Getting invoice for order #${q}...`
       },
       {
         key: "stock_check",
         label: "Stock",
         icon: Package,
         placeholder: "Enter product ID to check stock",
-        buildMessage: (q) => `/check_stock{"product_id":"${q}"}`
+        buildMessage: (q) => `/check_stock{"product_id":"${q}"}`,
+        displayText: (q) => `Checking stock for product #${q}...`
       },
       {
         key: "update_stock",
@@ -33960,14 +34028,19 @@ Priority: ${data.priority} `;
         icon: Users,
         placeholder: "Enter customer ID",
         buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`,
+        displayText: (q) => `Looking up customer #${q}...`,
         hidden: true
       },
       {
         key: "customer_orders",
-        label: "Customer Orders",
+        label: "Last Orders",
         icon: ShoppingCart,
-        placeholder: "Enter customer ID",
-        buildMessage: (q) => `/admin_customer_last_orders{"customer_id":"${q}"}`,
+        placeholder: "Enter no of last orders",
+        buildMessage: (q) => {
+          const cid = lastCustomerIdRef.current;
+          return cid ? `/admin_customer_last_orders{"order_limit":"${q}","customer_id":"${cid}"}` : `/admin_customer_last_orders{"order_limit":"${q}"}`;
+        },
+        displayText: (q) => `Fetching last ${q} orders...`,
         hidden: true
       },
       {
@@ -33976,6 +34049,7 @@ Priority: ${data.priority} `;
         icon: Package,
         placeholder: "Enter product name or ID",
         buildMessage: (q) => `/admin_find_product{"product_name":"${q}"}`,
+        displayText: (q) => `Searching for product: "${q}"...`,
         hidden: true
       }
     ];
@@ -33994,9 +34068,10 @@ Priority: ${data.priority} `;
       const query = searchQuery.trim();
       if (!query) return;
       const message = action.buildMessage ? action.buildMessage(query) : query;
+      const friendlyText = action.displayText ? action.displayText(query) : query;
       setSearchContext({ open: false, type: null });
       setSearchQuery("");
-      await sendTextMessage(message);
+      await sendTextMessage(message, friendlyText);
     };
     const handleStockSubmit = async (e) => {
       e.preventDefault();
@@ -34012,7 +34087,10 @@ Priority: ${data.priority} `;
       }
       setStockPopup({ open: false, productId: "" });
       setStockQuantity("");
-      await sendTextMessage(`/update_stock{"product_id":"${productId}","stock_quantity":"${qty}"}`);
+      await sendTextMessage(
+        `/update_stock{"product_id":"${productId}","stock_quantity":"${qty}"}`,
+        `Updating stock for product #${productId} to ${qty}...`
+      );
     };
     const handleTicketIdSubmit = async (e) => {
       e.preventDefault();
@@ -34400,7 +34478,21 @@ Priority: ${data.priority} `;
                         )
                       ] }),
                       /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleStockSubmit, className: "flex flex-col gap-2", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
+                        stockPopup.productId ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 flex justify-between items-center mb-1", children: [
+                          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                            "Product ID: ",
+                            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: stockPopup.productId })
+                          ] }),
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => setStockPopup({ ...stockPopup, productId: "" }),
+                              className: "text-blue-500 hover:text-blue-700 text-xs font-medium",
+                              children: "Change"
+                            }
+                          )
+                        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
                           "input",
                           {
                             type: "text",
@@ -34420,7 +34512,8 @@ Priority: ${data.priority} `;
                             onChange: (e) => setStockQuantity(e.target.value),
                             placeholder: "Stock quantity",
                             className: "bg-gray-100 text-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 transition-all",
-                            style: { "--tw-ring-color": `${primaryColor}80`, fontSize: `${inputFontSize}px` }
+                            style: { "--tw-ring-color": `${primaryColor}80`, fontSize: `${inputFontSize}px` },
+                            autoFocus: !!stockPopup.productId
                           }
                         ),
                         /* @__PURE__ */ jsxRuntimeExports.jsx(

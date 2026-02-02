@@ -319,15 +319,15 @@ class ActionSearchProducts(Action):
 
             message = f"**🔍 Search Results for '{search_query}'** ({len(products)} found)\n\n"
             message += "| Product | Price | Stock |\n"
-            message += "| :--- | :--- | :--- |\n"
+            message += "| :--- | ---: | :---: |\n"
 
             for p in products[:10]:
                 name = p.get("name", "Unknown")[:30]
                 price = p.get("price", 0)
-                stock = "✅ In Stock" if p.get("in_stock") else "❌ Out of Stock"
+                stock_icon = "✅" if p.get("in_stock") else "❌"
                 product_id = p.get("id")
 
-                message += f"| **{name}** (ID: {product_id}) | ${price:.2f} | {stock} |\n"
+                message += f"| **{name}** (ID: {product_id}) | ${price:.2f} | {stock_icon} |\n"
 
             dispatcher.utter_message(
                 text=message,
@@ -923,16 +923,14 @@ class ActionAdminFindProduct(Action):
 
             stock_icon = "✅" if p.get("in_stock") else "❌"
 
-            message = f"**📦 Product Found: {p.get('name')}**\n\n"
-            message += f"| **ID** | {p.get('id')} |\n"
-            message += "| :--- | :--- |\n"
-            message += f"| **SKU** | {p.get('sku', 'N/A')} |\n"
-            message += f"| **Stock** | {stock_icon} {stock_qty} units |\n"
-            message += f"| **Price** | ${p.get('price', 0):.2f} |\n"
+            message = f"**📦 Product Found**\n\n"
+            message += "| Name | SKU | Price | Stock |\n"
+            message += "| :--- | :--- | :--- | :--- |\n"
+            message += f"| **{p.get('name')}** (ID: {p.get('id')}) | {p.get('sku', 'N/A')} | ${p.get('price', 0):.2f} | {stock_icon} {stock_qty} |\n"
 
             # Show additional price fields if available
             if p.get("min_price"):
-                message += f"| **Min Price** | ${p.get('min_price'):.2f} |\n"
+                message += f"\n**Min Price:** ${p.get('min_price'):.2f}\n"
 
             # Show tier prices in horizontal table
             tier_a = p.get("price_a")
@@ -1049,7 +1047,7 @@ class ActionAdminGetCustomer(Action):
                 text=message,
                 buttons=[
                     {"title": "👤 Customer Details", "payload": f"/admin_get_customer_details{{\"customer_id\": \"{customer_id}\"}}"},
-                    {"title": "🧾 Last Orders", "payload": f"/admin_customer_last_orders{{\"customer_query\": \"{customer_id}\"}}"}
+                    {"title": "🧾 Last Orders", "payload": f"/admin_customer_last_orders{{\"customer_id\": \"{customer_id}\"}}"}
                 ]
             )
             return [SlotSet("customer_id", str(customer_id))]
@@ -1092,6 +1090,7 @@ class ActionAdminGetCustomerDetails(Action):
 
         if result["success"]:
             c = result["customer"]
+            billing = c.get('billing_address') or {}
             message = f"**👤 Customer Details #{c.get('id')}**\n\n"
             message += "| Property | Value |\n"
             message += "| :--- | :--- |\n"
@@ -1099,11 +1098,15 @@ class ActionAdminGetCustomerDetails(Action):
             message += f"| **Email** | {c.get('email') or 'N/A'} |\n"
             message += f"| **Username** | {c.get('username') or 'N/A'} |\n"
             message += f"| **Phone** | {c.get('phone') or 'N/A'} |\n"
+            message += f"| **Company** | {c.get('company') or 'N/A'} |\n"
+            message += f"| **City** | {billing.get('city') or 'N/A'} |\n"
+            message += f"| **Country** | {billing.get('country') or 'N/A'} |\n"
+            message += f"| **VAT Number** | {c.get('vat_number') or 'N/A'} |\n"
             message += f"| **Active** | {str(c.get('is_active', 'N/A'))} |\n"
             dispatcher.utter_message(
                 text=message,
                 buttons=[
-                    {"title": "🧾 Last Orders", "payload": f"/admin_customer_last_orders{{\"customer_query\": \"{customer_id}\"}}"}
+                    {"title": "🧾 Last Orders", "payload": f"/admin_customer_last_orders{{\"customer_id\": \"{customer_id}\"}}"}
                 ]
             )
             return [SlotSet("customer_id", str(customer_id))]
@@ -1128,18 +1131,31 @@ class ActionAdminCustomerLastOrders(Action):
         limit = tracker.get_slot("order_limit")
         customer_id = tracker.get_slot("customer_id")
 
+        logger.info(f"ActionAdminCustomerLastOrders: customer_query={query}, customer_id={customer_id}, order_limit={limit}")
+
         for entity in tracker.latest_message.get("entities", []):
-            if entity.get("entity") == "customer_query" and not query:
+            if entity.get("entity") == "customer_query":
                 query = entity.get("value")
-            if entity.get("entity") == "order_limit" and not limit:
+            if entity.get("entity") == "order_limit":
                 limit = entity.get("value")
+            if entity.get("entity") == "customer_id":
+                customer_id = entity.get("value")
+
+        # Use customer_id from slot if query is not available
+        if not query and customer_id:
+            query = customer_id
+
+        # Last resort: scan tracker events for the last customer_id SlotSet
+        if not query:
+            for event in reversed(tracker.events):
+                if event.get("event") == "slot" and event.get("name") == "customer_id" and event.get("value"):
+                    query = event.get("value")
+                    logger.info(f"ActionAdminCustomerLastOrders: found customer_id from events: {query}")
+                    break
 
         if not query:
-            if customer_id:
-                query = customer_id
-            else:
-                dispatcher.utter_message(text="Please provide a **customer ID or email** to get recent orders.")
-                return []
+            dispatcher.utter_message(text="⚠️ No customer selected. Please look up a customer first.")
+            return []
 
         try:
             limit_val = int(str(limit).strip()) if limit else 5
@@ -1167,7 +1183,7 @@ class ActionAdminCustomerLastOrders(Action):
                     {"title": "👤 Find Customer", "payload": "/admin_find_customer"}
                 ]
             )
-            return [SlotSet("customer_query", str(query)), SlotSet("order_limit", str(limit_val))]
+            return [SlotSet("customer_query", str(query)), SlotSet("order_limit", None)]
 
         dispatcher.utter_message(text=f"❌ {result.get('error', 'No orders found.')}")
         return []

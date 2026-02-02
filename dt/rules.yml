@@ -1,0 +1,109 @@
+version: "3.1"
+
+rules:
+  - rule: Say hi
+    steps:
+      - intent: greet
+      - action: action_greet
+
+  - rule: Say goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - rule: Respond to out-of-scope
+    steps:
+      - intent: out_of_scope
+      - action: utter_out_of_scope
+
+  - rule: Ask KB on Fallback
+    steps:
+      - intent: nlu_fallback
+      - action: action_kb_search
+
+  - rule: Ask KB direct
+    steps:
+      - intent: ask_kb
+      - action: action_kb_search
+
+  # E-COMMERCE RULES (nopCommerce)
+  - rule: Handle login
+    steps:
+      - intent: login
+      - action: action_nopcommerce_login
+
+  - rule: Search products
+    steps:
+      - intent: search_products
+      - action: action_search_products
+
+  - rule: Get product details
+    steps:
+      - intent: product_details
+      - action: action_get_product_details
+
+  - rule: Check stock
+    steps:
+      - intent: check_stock
+      - action: action_check_stock
+
+  - rule: Update stock
+    steps:
+      - intent: update_stock
+      - action: action_update_stock
+
+  - rule: Track order
+    steps:
+      - intent: track_order
+      - action: action_track_order
+
+  - rule: Get invoice
+    steps:
+      - intent: get_invoice
+      - action: action_get_invoice
+
+  - rule: Update order status
+    steps:
+      - intent: update_order_status
+      - action: action_update_order_status
+
+  - rule: List orders
+    steps:
+      - intent: list_orders
+      - action: action_list_orders
+
+  # ADMIN RULES
+  - rule: Admin find product
+    steps:
+      - intent: admin_find_product
+      - action: action_admin_find_product
+
+  - rule: Admin find customer
+    steps:
+      - intent: admin_find_customer
+      - action: action_admin_find_customer
+
+  - rule: Admin get customer
+    steps:
+      - intent: admin_get_customer
+      - action: action_admin_get_customer
+
+  - rule: Admin get customer details
+    steps:
+      - intent: admin_get_customer_details
+      - action: action_admin_get_customer_details
+
+  - rule: Admin customer last orders
+    steps:
+      - intent: admin_customer_last_orders
+      - action: action_admin_customer_last_orders
+
+  - rule: Admin token profile
+    steps:
+      - intent: admin_token_me
+      - action: action_admin_token_me
+
+  - rule: Admin current user
+    steps:
+      - intent: admin_me
+      - action: action_admin_me

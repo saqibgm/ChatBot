@@ -96,6 +96,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
     const [searchContext, setSearchContext] = useState({ open: false, type: null });
     const [searchQuery, setSearchQuery] = useState('');
     const [lastProductId, setLastProductId] = useState('');
+    const lastCustomerIdRef = useRef('');
     const [stockPopup, setStockPopup] = useState({ open: false, productId: '' });
     const [stockQuantity, setStockQuantity] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -263,6 +264,13 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             return;
         }
 
+        // Helper to update last product ID from any payload
+        const updateLastProductId = (data) => {
+            if (data?.product_id) {
+                setLastProductId(String(data.product_id));
+            }
+        };
+
         // Intercept List Tickets to show Filter popup
         // BUT prevent loop if it's the recursive call with status_id inside
         if (payload === '/list_tickets' && !payload.includes('{')) {
@@ -291,6 +299,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         // Check Stock - needs product ID
         if (payload === '/check_stock' || payload.startsWith('/check_stock{')) {
             const data = extractPayloadData(payload, '/check_stock');
+            updateLastProductId(data);
             if (data?.product_id) {
                 setSearchQuery(String(data.product_id));
             }
@@ -298,18 +307,35 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             return;
         }
 
+        // Product Details - capture ID
+        if (payload === '/product_details' || payload.startsWith('/product_details{')) {
+            const data = extractPayloadData(payload, '/product_details');
+            updateLastProductId(data);
+            // No popup needed, just context update
+        }
+
         // Get Invoice - auto-detects order ID on backend (no popup needed)
 
         // Update Stock - needs product ID + quantity (ALWAYS show popup)
         if (payload === '/update_stock' || payload.startsWith('/update_stock{')) {
             const data = extractPayloadData(payload, '/update_stock');
+            updateLastProductId(data);
+
             if (data?.product_id) {
-                setStockPopup({ open: true, productId: String(data.product_id) });
-                setStockQuantity('');
+                // If we have an ID in the payload, verify if we need quantity
+                if (data.stock_quantity) {
+                    // Have both, let it pass through to backend (no popup)
+                } else {
+                    // Have ID but no quantity, show popup with ID pre-filled (and hidden/static)
+                    setStockPopup({ open: true, productId: String(data.product_id) });
+                    setStockQuantity('');
+                    return;
+                }
             } else {
+                // No ID in payload, check if we have one from context
                 openStockPopup();
+                return;
             }
-            return;
         }
 
         // Admin Find Customer - needs customer ID/email
@@ -328,11 +354,11 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             return;
         }
 
-        // Admin Customer Last Orders - needs customer ID
+        // Admin Customer Last Orders - ask for number of orders, carry customer_id
         if (payload === '/admin_customer_last_orders' || payload.startsWith('/admin_customer_last_orders{')) {
             const data = extractPayloadData(payload, '/admin_customer_last_orders');
             if (data?.customer_id) {
-                setSearchQuery(String(data.customer_id));
+                lastCustomerIdRef.current = String(data.customer_id);
             }
             openSearchPopup('customer_orders');
             return;
@@ -363,8 +389,39 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                 displayText = '📝 Submitting Ticket...';
             }
         } else if (payload.includes('status_id')) {
-            // Friendly text for user
             displayText = "🔍 Filtering tickets...";
+        } else if (payload.startsWith('/admin_get_customer_details')) {
+            displayText = "📋 Loading customer details...";
+        } else if (payload.startsWith('/admin_get_customer')) {
+            displayText = "🔍 Looking up customer...";
+        } else if (payload.startsWith('/admin_customer_last_orders')) {
+            displayText = "🧾 Fetching last orders...";
+        } else if (payload.startsWith('/admin_find_customer')) {
+            displayText = "🔍 Searching for customer...";
+        } else if (payload.startsWith('/admin_find_product')) {
+            displayText = "🔍 Searching for product...";
+        } else if (payload.startsWith('/admin_token_me')) {
+            displayText = "🔐 Loading admin profile...";
+        } else if (payload.startsWith('/admin_me')) {
+            displayText = "👤 Loading admin user...";
+        } else if (payload.startsWith('/track_order')) {
+            displayText = "🛒 Tracking order...";
+        } else if (payload.startsWith('/search_products')) {
+            displayText = "🔍 Searching products...";
+        } else if (payload.startsWith('/check_stock')) {
+            displayText = "📦 Checking stock...";
+        } else if (payload.startsWith('/update_stock')) {
+            displayText = "📦 Updating stock...";
+        } else if (payload.startsWith('/get_invoice')) {
+            displayText = "📄 Getting invoice...";
+        } else if (payload.startsWith('/product_details')) {
+            displayText = "📦 Loading product details...";
+        } else if (payload.startsWith('/list_orders')) {
+            displayText = "🧾 Loading orders...";
+        } else if (payload.startsWith('/help')) {
+            displayText = "❓ Help";
+        } else if (payload.startsWith('/check_status')) {
+            displayText = "🔍 Checking status...";
         }
 
         // Show user's choice
@@ -460,7 +517,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         }
     };
 
-    const sendTextMessage = async (text) => {
+    const sendTextMessage = async (text, displayText = null) => {
         if (!text.trim()) return;
 
         const productMatch = text.match(/product\s*(?:id\s*)?(\d+)/i);
@@ -468,15 +525,17 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             setLastProductId(productMatch[1]);
         }
 
-        // Guard Rails: Validate input
-        const validation = validateInput(text);
-        if (!validation.valid) {
-            setMessages(prev => [...prev, {
-                id: uuidv4(),
-                sender: 'bot',
-                text: `⚠️ ${validation.error} `
-            }]);
-            return;
+        // Guard Rails: Validate input (skip for internal payloads with displayText)
+        if (!displayText) {
+            const validation = validateInput(text);
+            if (!validation.valid) {
+                setMessages(prev => [...prev, {
+                    id: uuidv4(),
+                    sender: 'bot',
+                    text: `⚠️ ${validation.error} `
+                }]);
+                return;
+            }
         }
 
         // Handle "set theme {id}" command
@@ -511,7 +570,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             return;
         }
 
-        const userMsg = { id: uuidv4(), sender: senderId, text };
+        const userMsg = { id: uuidv4(), sender: senderId, text: displayText || text };
         setMessages(prev => [...prev, userMsg]);
         setIsLoading(true);
 
@@ -625,7 +684,8 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             label: 'Product',
             icon: Package,
             placeholder: 'Enter product ID (number)',
-            buildMessage: (q) => `/product_details{"product_id":"${q}"}`
+            buildMessage: (q) => `/product_details{"product_id":"${q}"}`,
+            displayText: (q) => `Loading product #${q} details...`
         },
         {
             key: 'search_product',
@@ -633,6 +693,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             icon: Search,
             placeholder: 'Enter product name',
             buildMessage: (q) => `/search_products{"search_query":"${q}"}`,
+            displayText: (q) => `Searching products: "${q}"...`,
             hidden: true
         },
         {
@@ -640,28 +701,32 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             label: 'Order',
             icon: ShoppingCart,
             placeholder: 'Enter order ID',
-            buildMessage: (q) => `/track_order{"order_id":"${q}"}`
+            buildMessage: (q) => `/track_order{"order_id":"${q}"}`,
+            displayText: (q) => `Tracking order #${q}...`
         },
         {
             key: 'customer',
             label: 'Customer',
             icon: Users,
             placeholder: 'Enter customer ID (number)',
-            buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`
+            buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`,
+            displayText: (q) => `Looking up customer #${q}...`
         },
         {
             key: 'invoice',
             label: 'Invoice',
             icon: FileText,
             placeholder: 'Enter order ID for invoice',
-            buildMessage: (q) => `/get_invoice{"order_id":"${q}"}`
+            buildMessage: (q) => `/get_invoice{"order_id":"${q}"}`,
+            displayText: (q) => `Getting invoice for order #${q}...`
         },
         {
             key: 'stock_check',
             label: 'Stock',
             icon: Package,
             placeholder: 'Enter product ID to check stock',
-            buildMessage: (q) => `/check_stock{"product_id":"${q}"}`
+            buildMessage: (q) => `/check_stock{"product_id":"${q}"}`,
+            displayText: (q) => `Checking stock for product #${q}...`
         },
         {
             key: 'update_stock',
@@ -675,14 +740,21 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             icon: Users,
             placeholder: 'Enter customer ID',
             buildMessage: (q) => `/admin_get_customer{"customer_id":"${q}"}`,
+            displayText: (q) => `Looking up customer #${q}...`,
             hidden: true
         },
         {
             key: 'customer_orders',
-            label: 'Customer Orders',
+            label: 'Last Orders',
             icon: ShoppingCart,
-            placeholder: 'Enter customer ID',
-            buildMessage: (q) => `/admin_customer_last_orders{"customer_id":"${q}"}`,
+            placeholder: 'Enter no of last orders',
+            buildMessage: (q) => {
+                const cid = lastCustomerIdRef.current;
+                return cid
+                    ? `/admin_customer_last_orders{"order_limit":"${q}","customer_id":"${cid}"}`
+                    : `/admin_customer_last_orders{"order_limit":"${q}"}`;
+            },
+            displayText: (q) => `Fetching last ${q} orders...`,
             hidden: true
         },
         {
@@ -691,6 +763,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
             icon: Package,
             placeholder: 'Enter product name or ID',
             buildMessage: (q) => `/admin_find_product{"product_name":"${q}"}`,
+            displayText: (q) => `Searching for product: "${q}"...`,
             hidden: true
         }
     ];
@@ -714,13 +787,14 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         if (!query) return;
 
         const message = action.buildMessage ? action.buildMessage(query) : query;
+        const friendlyText = action.displayText ? action.displayText(query) : query;
 
         // Close popup immediately
         setSearchContext({ open: false, type: null });
         setSearchQuery('');
 
-        // Then send the message
-        await sendTextMessage(message);
+        // Send raw payload to Rasa but show friendly text to user
+        await sendTextMessage(message, friendlyText);
     };
 
     const handleStockSubmit = async (e) => {
@@ -738,8 +812,11 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
         // Close popup immediately
         setStockPopup({ open: false, productId: '' });
         setStockQuantity('');
-        // Then send the message
-        await sendTextMessage(`/update_stock{"product_id":"${productId}","stock_quantity":"${qty}"}`);
+        // Then send the message with friendly display text
+        await sendTextMessage(
+            `/update_stock{"product_id":"${productId}","stock_quantity":"${qty}"}`,
+            `Updating stock for product #${productId} to ${qty}...`
+        );
     };
 
     const handleTicketIdSubmit = async (e) => {
@@ -1096,15 +1173,29 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                             </button>
                                         </div>
                                         <form onSubmit={handleStockSubmit} className="flex flex-col gap-2">
-                                            <input
-                                                type="text"
-                                                value={stockPopup.productId}
-                                                onChange={(e) => setStockPopup({ open: true, productId: e.target.value })}
-                                                placeholder="Product ID"
-                                                className="bg-gray-100 text-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 transition-all"
-                                                style={{ '--tw-ring-color': `${primaryColor}80`, fontSize: `${inputFontSize}px` }}
-                                                autoFocus
-                                            />
+                                            {stockPopup.productId ? (
+                                                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 flex justify-between items-center mb-1">
+                                                    <span>Product ID: <strong>{stockPopup.productId}</strong></span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setStockPopup({ ...stockPopup, productId: '' })}
+                                                        className="text-blue-500 hover:text-blue-700 text-xs font-medium"
+                                                    >
+                                                        Change
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <input
+                                                    type="text"
+                                                    value={stockPopup.productId}
+                                                    onChange={(e) => setStockPopup({ open: true, productId: e.target.value })}
+                                                    placeholder="Product ID"
+                                                    className="bg-gray-100 text-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 transition-all"
+                                                    style={{ '--tw-ring-color': `${primaryColor}80`, fontSize: `${inputFontSize}px` }}
+                                                    autoFocus
+                                                />
+                                            )}
+
                                             <input
                                                 type="text"
                                                 value={stockQuantity}
@@ -1112,6 +1203,7 @@ const ChatWindow = ({ title = "Createl Bot", appId = "General", theme = null }) 
                                                 placeholder="Stock quantity"
                                                 className="bg-gray-100 text-gray-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 transition-all"
                                                 style={{ '--tw-ring-color': `${primaryColor}80`, fontSize: `${inputFontSize}px` }}
+                                                autoFocus={!!stockPopup.productId}
                                             />
                                             <button
                                                 type="submit"

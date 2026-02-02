@@ -29,3 +29,10 @@ stories:
       - action: action_admin_get_customer
       - intent: admin_customer_last_orders
       - action: action_admin_customer_last_orders
+
+  - story: Admin last orders ask limit then provide
+    steps:
+      - intent: admin_customer_last_orders
+      - action: action_admin_customer_last_orders
+      - intent: inform
+      - action: action_admin_customer_last_orders
