@@ -1,3 +1,6 @@
+# Set up PATH for Python and Rasa
+$env:Path = "C:\Users\Administrator\AppData\Local\Programs\Python\Python310;C:\Users\Administrator\AppData\Local\Programs\Python\Python310\Scripts;" + $env:Path
+
 Write-Host "Starting Rasa Createl Bot Services..." -ForegroundColor Cyan
 
 # 1. Stop existing instances

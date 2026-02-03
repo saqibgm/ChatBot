@@ -1,0 +1,334 @@
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\core\tracker_store.py:1044: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  Base: DeclarativeMeta = declarative_base()
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\rasa\shared\utils\validation.py:134: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+  import pkg_resources
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:3117: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('mpl_toolkits')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\pkg_resources\__init__.py:3117: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('ruamel')`.
+Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages
+  declare_namespace(pkg)
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\sanic_cors\extension.py:39: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  SANIC_VERSION = LooseVersion(sanic_version)
+2026-02-03 17:47:24 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Starting action endpoint server...
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_greet'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_nopcommerce_login'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_search_products'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_get_product_details'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_check_stock'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_update_stock'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_track_order'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_get_invoice'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_update_order_status'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_list_orders'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_find_product'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_find_customer'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_get_customer'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_get_customer_details'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_customer_last_orders'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_token_me'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_admin_me'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_kb_search'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.executor[0m  - Registered function for 'action_kb_cache_status'.
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Starting plugins...
+2026-02-03 17:47:26 [1;30mDEBUG   [0m [34mrasa_sdk.plugin[0m  - No plugins found: No module named 'rasa_sdk_plugins'
+2026-02-03 17:47:26 [1;30mINFO    [0m [34mrasa_sdk.endpoint[0m  - Action endpoint is up and running on http://0.0.0.0:5155
+2026-02-03 17:47:26 [1;30mDEBUG   [0m [34mrasa_sdk.utils[0m  - Using the default number of Sanic workers (1).
+2026-02-03 17:50:52 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 17:50:52 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 17:50:52 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 17:50:52 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 17:50:52 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:00:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:00:59 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:00:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:00:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:00:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:01:01 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 18:01:01 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 18:01:01 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:01:02 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:01:02 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:01:02 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/10060 HTTP/1.1" 200 517
+2026-02-03 18:01:02 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'
+2026-02-03 18:11:27 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:11:27 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:11:27 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:27 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:11:27 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 18:11:33 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/10080 HTTP/1.1" 200 525
+2026-02-03 18:11:33 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'
+2026-02-03 18:11:38 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_invoice'
+2026-02-03 18:11:38 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetInvoice: Getting order invoice
+2026-02-03 18:11:38 [1;30mINFO    [0m [34mactions.actions[0m  - Generating invoice for order: 379968
+2026-02-03 18:11:38 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/orders/379968/invoice HTTP/1.1" 401 89
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:11:39 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:11:43 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/orders/379968/invoice HTTP/1.1" 200 83580
+2026-02-03 18:11:43 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_invoice'
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer'
+2026-02-03 18:23:12 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomer: Getting customer by ID
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23178386 HTTP/1.1" 200 222
+2026-02-03 18:23:12 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer'
+2026-02-03 18:23:17 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer_details'
+2026-02-03 18:23:17 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomerDetails: Getting customer details
+2026-02-03 18:23:17 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:23:18 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:23:18 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:23:18 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23178386/details HTTP/1.1" 200 263
+2026-02-03 18:23:18 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer_details'
+2026-02-03 18:28:37 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:28:37 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:28:37 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:28:37 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:28:37 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 18:28:41 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/10099 HTTP/1.1" 200 522
+2026-02-03 18:28:41 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer'
+2026-02-03 18:28:49 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomer: Getting customer by ID
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23178383 HTTP/1.1" 404 162
+2026-02-03 18:28:49 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer'
+2026-02-03 18:29:09 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer'
+2026-02-03 18:29:09 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomer: Getting customer by ID
+2026-02-03 18:29:09 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:29:10 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:29:10 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:29:10 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23178389 HTTP/1.1" 404 162
+2026-02-03 18:29:10 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer'
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer'
+2026-02-03 18:29:48 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomer: Getting customer by ID
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23178379 HTTP/1.1" 404 162
+2026-02-03 18:29:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer'
+2026-02-03 18:30:13 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer'
+2026-02-03 18:30:13 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomer: Getting customer by ID
+2026-02-03 18:30:13 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:30:13 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:30:13 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:30:14 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23173379 HTTP/1.1" 200 226
+2026-02-03 18:30:14 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer'
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_get_customer_details'
+2026-02-03 18:33:59 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminGetCustomerDetails: Getting customer details
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23173379/details HTTP/1.1" 200 267
+2026-02-03 18:33:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_get_customer_details'
+2026-02-03 18:34:06 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_customer_last_orders'
+2026-02-03 18:34:06 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminCustomerLastOrders: Getting customer last orders
+2026-02-03 18:34:06 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminCustomerLastOrders: customer_query=None, customer_id=23173379, order_limit=5
+2026-02-03 18:34:06 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:34:06 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:34:06 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:34:07 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/customers/23173379/orders/last/5 HTTP/1.1" 200 175
+2026-02-03 18:34:07 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_customer_last_orders'
+2026-02-03 18:40:29 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:40:29 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:40:29 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:40:29 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:40:29 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 18:40:41 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/11235 HTTP/1.1" 200 533
+2026-02-03 18:40:41 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'
+2026-02-03 18:41:00 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_search_products'
+2026-02-03 18:41:00 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: Starting product search
+2026-02-03 18:41:00 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:00 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:41:00 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:01 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/find/HB436380ECW HTTP/1.1" 404 162
+2026-02-03 18:41:01 [1;30mERROR   [0m [34mactions.nopcommerce_service[0m  - [31mAdmin product find request failed for query 'HB436380ECW' (no response)[0m
+2026-02-03 18:41:01 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: search result success=False, products=0, error=Failed to connect to product search API.
+2026-02-03 18:41:01 [1;30mERROR   [0m [34mactions.actions[0m  - [31mActionSearchProducts: API error for query 'HB436380ECW': Failed to connect to product search API.[0m
+2026-02-03 18:41:01 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_search_products'
+2026-02-03 18:41:11 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_search_products'
+2026-02-03 18:41:11 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: Starting product search
+2026-02-03 18:41:11 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:11 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:41:11 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:12 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/find/Huawei HTTP/1.1" 200 7067
+2026-02-03 18:41:12 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: search result success=True, products=10, error=None
+2026-02-03 18:41:12 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_search_products'
+2026-02-03 18:41:31 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_search_products'
+2026-02-03 18:41:31 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: Starting product search
+2026-02-03 18:41:31 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:31 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:41:31 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:41:32 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/find/550300 HTTP/1.1" 200 164
+2026-02-03 18:41:32 [1;30mINFO    [0m [34mactions.actions[0m  - ActionSearchProducts: search result success=True, products=1, error=None
+2026-02-03 18:41:32 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_search_products'
+2026-02-03 18:50:33 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:50:33 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:50:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:50:33 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:50:33 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 18:58:05 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 18:58:05 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 18:58:05 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 18:58:05 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 18:58:05 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:03:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 19:03:48 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 19:03:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:03:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:03:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:04:46 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 19:04:46 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 19:04:46 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:04:46 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:04:46 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:06:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 19:06:48 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 19:06:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:06:48 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:06:48 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 19:07:21 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/10060 HTTP/1.1" 200 517
+2026-02-03 19:07:21 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'
+2026-02-03 19:09:27 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 19:09:27 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 19:09:27 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:09:27 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:09:27 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:14:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_admin_me'
+2026-02-03 19:14:59 [1;30mINFO    [0m [34mactions.actions[0m  - ActionAdminMe: Getting admin user profile
+2026-02-03 19:14:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:14:59 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:14:59 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_admin_me'
+2026-02-03 19:15:07 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Received request to run 'action_get_product_details'
+2026-02-03 19:15:07 [1;30mINFO    [0m [34mactions.actions[0m  - ActionGetProductDetails: Getting product details
+2026-02-03 19:15:07 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:15:07 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "POST /api/admin/token HTTP/1.1" 200 263
+2026-02-03 19:15:07 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - Starting new HTTPS connection (1): createl.shop:443
+C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'createl.shop'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+2026-02-03 19:15:08 [1;30mDEBUG   [0m [34murllib3.connectionpool[0m  - https://createl.shop:443 "GET /api/admin/products/10055 HTTP/1.1" 200 516
+2026-02-03 19:15:08 [1;30mDEBUG   [0m [34mrasa_sdk.executor[0m  - Finished running 'action_get_product_details'

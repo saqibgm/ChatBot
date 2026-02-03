@@ -4,7 +4,7 @@ action_endpoint:
 tracker_store:
   type: SQL
   dialect: "mssql+pyodbc"
-  url: "mssql+pyodbc://sa:12345@LAPTOP-SI\\SQLEXPRESS/ChatBot?driver=ODBC+Driver+17+for+SQL+Server"
+  url: "mssql+pyodbc://createlsa:ABC123bedm@localhost/ChatBot?driver=ODBC+Driver+17+for+SQL+Server"
 
 event_broker:
   type: "actions.custom_broker.SQLServerBroker"

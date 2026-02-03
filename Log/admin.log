@@ -1,0 +1,6 @@
+Warning: Could not load KB cache: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+Starting Unified Server on port 8181...
+Serving static files from: C:\inetpub\wwwroot\Chatbot\client ui\dist-widget
+  Admin Dashboard:        http://localhost:8181/admin.html
+ * Serving Flask app 'admin_api'
+ * Debug mode: off
